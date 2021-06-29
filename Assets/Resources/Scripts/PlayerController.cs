@@ -21,26 +21,34 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb2D;
     private Animator anim;
 
-    public GameObject weapon;
-    public GameObject weaponPivot;
+    private GameObject weapon;
+    private GameObject weaponPivot;
 
-    public int playerNum;
-    public UnityEngine.UI.Image playerIcon;
-    public UnityEngine.UI.Image healthBar;
-    public UnityEngine.UI.Image manaBar;
+    [HideInInspector] public int playerNum;
+
+    private UnityEngine.UI.Image playerIcon;
+    private UnityEngine.UI.Image healthBar;
+    private UnityEngine.UI.Image manaBar;
+
+    public GameObject spellBolt;
+    public GameObject arrow;
 
     private void Awake()
     {
         controls = new Controls();
 
-        controls.Player.Aiming.performed += ctx => Aim(ctx.ReadValue<Vector2>());
+        controls.Player.Aiming.performed += ctx => Aim(ctx.ReadValue<Vector2>().normalized);
         controls.Player.Run.performed += ctx => Run(ctx.ReadValue<float>() == 1f);
         controls.Player.Jump.performed += _ => Jump();
 
-        controls.Player.UseWeapon.started += _ => StartUseWeapon();
+        controls.Player.UseWeapon.performed += _ => StartUseWeapon();
         controls.Player.UseWeapon.canceled += _ => EndUseWeapon();
         controls.Player.UseAbility.performed += _ => UseAbility();
         controls.Player.UseItem.performed += _ => UseItem();
+
+        playerClass = PlayerTypes.RobinHog;
+        weaponClass = WeaponTypes.Bow;
+        abilityClass = AbilityTypes.SuperShot;
 
         rb2D = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -48,21 +56,14 @@ public class PlayerController : MonoBehaviour
         weapon = GetComponentInChildren<Weapon>().gameObject;
         weaponPivot = weapon.transform.parent.gameObject;
 
-        if (playerClass == null)
-        {
-            playerClass = PlayerTypes.PorkChops;
-            weaponClass = WeaponTypes.Drill;
-            abilityClass = AbilityTypes.DirtDash;
-        }
-
         currentSpeed = playerClass.walkSpeed;
         hpMana = new AlterableStats(playerClass.hp, playerClass.mana);
 
         UnityEngine.UI.Image[] hud = GameObject.FindGameObjectsWithTag("HUD")[playerNum].GetComponentsInChildren<UnityEngine.UI.Image>();
 
-        playerIcon = hud[0];
-        healthBar = hud[1];
-        manaBar = hud[2];
+        healthBar = hud[0];
+        manaBar = hud[1];
+        playerIcon = hud[2];
         
         if (playerClass.mana == 0)
         {
@@ -107,27 +108,16 @@ public class PlayerController : MonoBehaviour
         if (weaponClass.manaUse > hpMana.currentMana)
             return;
 
-        if (weaponClass.startUseAction != null)
-        {
-            weaponClass.startUseAction.Invoke(this);
-            return;
-        }
-
-
+        weaponClass.startUseAction.Invoke(this);
+        UseMana(weaponClass.manaUse);
     }
 
     private void EndUseWeapon()
     {
-        if (weaponClass.manaUse > hpMana.currentMana)
-            return;
-
         if (weaponClass.endUseAction != null)
         {
-            weaponClass.startUseAction.Invoke(this);
-            return;
+            weaponClass.endUseAction.Invoke(this);
         }
-
-
     }
 
     private void UseAbility()
@@ -135,6 +125,7 @@ public class PlayerController : MonoBehaviour
         if (abilityClass.manaUse > hpMana.currentMana)
             return;
 
+        UseMana(abilityClass.manaUse);
         abilityClass.useAction.Invoke(this);
     }
 
@@ -144,6 +135,46 @@ public class PlayerController : MonoBehaviour
             return;
 
         currentItem.useAction.Invoke();
+    }
+
+    #endregion
+
+    #region Attacks
+
+    public void Mine()
+    {
+
+    }
+
+    public void UseDrill()
+    {
+
+    }
+
+    public void Swing()
+    {
+
+    }
+
+    public void ShootSpell()
+    {
+        GameObject newBolt = Instantiate(spellBolt);
+        newBolt.transform.position = transform.position;
+
+        newBolt.GetComponent<Rigidbody2D>().velocity = weaponPivot.transform.right;
+    }
+
+    public void PullBow()
+    {
+
+    }
+
+    public void ReleaseBow()
+    {
+        GameObject newArrow = Instantiate(arrow);
+        newArrow.transform.position = transform.position;
+
+        newArrow.GetComponent<Rigidbody2D>().AddForce(weaponPivot.transform.right * 10f, ForceMode2D.Impulse);
     }
 
     #endregion
