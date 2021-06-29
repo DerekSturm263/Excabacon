@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Users;
 
 public class GameController : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class GameController : MonoBehaviour
 
             PlayerController newPlayer = Instantiate(player).GetComponent<PlayerController>();
             newPlayer.playerNum = i;
+            InputUser.PerformPairingWithDevice(Gamepad.all[i], InputUser.all[i]);
         }
     }
 }
