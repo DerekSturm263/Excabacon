@@ -10,6 +10,8 @@ public class TileTerrainTestScript : MonoBehaviour
     Tilemap terrain;
     public TileProperties Tiles;
     public PerlinProperties NoiseGeneration;
+
+    public EdgeProperties Edges;
     public TerrainDebugProperties TerrainDebug;
     
     public bool GenerateOnGameStart = true;
@@ -75,13 +77,15 @@ public class TileTerrainTestScript : MonoBehaviour
             noise_value = GenerateNoise(new Vector2(TilePos_X,Tilepos_Y),randomiser);
             
             float noise_value_minMax = Remap(noise_value,NoiseGeneration.PerlinMinMax.x,NoiseGeneration.PerlinMinMax.y);      
+            float gradient_test = generateGradient(new Vector2(count_X,count_Y));
             
-            if(noise_value_minMax> NoiseGeneration.NoiseThreshold && !TerrainDebug.DebugNoise)
+            float noisePlusGradient =Mathf.Clamp(noise_value_minMax,0,1) - gradient_test  ;
+            if(noisePlusGradient > NoiseGeneration.NoiseThreshold && !TerrainDebug.DebugNoise)
             {
                 SubtractTile(Vector2Int.RoundToInt(new Vector2(TilePos_X,Tilepos_Y)));
             }
             if(TerrainDebug.DebugNoise){
-                DebugNoise(Vector3Int.RoundToInt(new Vector3(TilePos_X,Tilepos_Y,0)),noise_value_minMax);
+                DebugNoise(Vector3Int.RoundToInt(new Vector3(TilePos_X,Tilepos_Y,0)),noisePlusGradient );
             }
         }
     }
@@ -97,6 +101,29 @@ public class TileTerrainTestScript : MonoBehaviour
         noise_value = Mathf.PerlinNoise(noise_x,noise_y);
 
         return noise_value;
+    }
+
+    float generateGradient(Vector2 position)
+    {
+        float gradient_value;
+        
+        float BottomGradient = position.y / (Mathf.Abs(Tiles.MinTileBounds.y)  + Mathf.Abs(Tiles.MaxTileBounds.y) );
+
+        float TopGradient = 1 - BottomGradient;
+        
+        float LeftGradient = position.x / (Mathf.Abs(Tiles.MinTileBounds.x)  + Mathf.Abs(Tiles.MaxTileBounds.x )  );
+        
+        float RightGradient = 1 - LeftGradient;
+
+
+        float bg_eval = Edges.GradientCurve.Evaluate(BottomGradient);
+        float tg_eval = Edges.GradientCurve.Evaluate(TopGradient); 
+        float lg_eval = Edges.GradientCurve.Evaluate(LeftGradient); 
+        float rg_eval = Edges.GradientCurve.Evaluate(RightGradient); 
+        
+        gradient_value = (bg_eval + tg_eval +lg_eval + rg_eval);
+        
+        return gradient_value;
     }
     
     private void DebugNoise(Vector3Int position,float Value)
@@ -164,6 +191,11 @@ public class TileTerrainTestScript : MonoBehaviour
         [Range(0,2f)]
         public float NoiseThreshold = 0.5f;
 
+    }
+    [System.Serializable]
+    public class EdgeProperties
+    {
+        public AnimationCurve GradientCurve;
     }
     
     [System.Serializable]
