@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - HUD
+  - Spawn Point
   layers:
   - Default
   - TransparentFX

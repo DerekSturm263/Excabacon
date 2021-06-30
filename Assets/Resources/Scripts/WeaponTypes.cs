@@ -1,21 +1,22 @@
 public static class WeaponTypes
 {
-    public static WeaponType Drill = new WeaponType("Drill", damage: 4, knockback: 2, speed: 0, manaUse: 0, canMine: true);
-    public static WeaponType Pickaxe = new WeaponType("Pickaxe", 8, 4, 2, 0, true);
-    public static WeaponType Spell = new WeaponType("Mining Spell", 10, 0, 6, 4, false,
+    private static UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/weapon_icons");
+
+    public static WeaponType Drill = new WeaponType(name: "Drill", icon: iconSpriteSheet[0], damage: 4, knockback: 2, speed: 0, manaUse: 0);
+    public static WeaponType Pickaxe = new WeaponType("Pickaxe", iconSpriteSheet[1], 8, 4, 2, 0);
+    public static WeaponType Spell = new WeaponType("Spell", iconSpriteSheet[2], 10, 0, 6, 4);
+
+    public static WeaponType Bow = new WeaponType("Bow", iconSpriteSheet[3], 6, 2, 0, 0,
+        new System.Action<PlayerController>((player) =>
+    {
+        player.BowStart(1, 3f, 0.5f);
+    }),
+        new System.Action<PlayerController>((player) =>
+    {
+        player.BowUpdate();
+    }),
     new System.Action<PlayerController>((player) =>
     {
-        player.ShootSpell();
-    }));
-
-    public static WeaponType Bow = new WeaponType("Bow", 6, 2, 0, 0, false,
-        new System.Action<PlayerController>((player) =>
-    {
-        player.PullBow();
-    }
-    ),
-        new System.Action<PlayerController>((player) =>
-    {
-        player.ReleaseBow();
+        player.BowEnd();
     }));
 }

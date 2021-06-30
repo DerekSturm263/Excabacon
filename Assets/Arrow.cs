@@ -14,10 +14,7 @@ public class Arrow : MonoBehaviour
 
     private void Update()
     {
-        if (!isColliding)
-        {
-            transform.right = -rb2D.velocity.normalized;
-        }
+        transform.right = -rb2D.velocity.normalized;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

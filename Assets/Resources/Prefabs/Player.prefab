@@ -113,8 +113,8 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_Size: {x: 0.5, y: 0.5}
+  m_EdgeRadius: 0.25
 --- !u!50 &3876443010558790336
 Rigidbody2D:
   serializedVersion: 4
@@ -167,14 +167,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 955919c42a4d78e4aaaa38f46652e53c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ground:
-    serializedVersion: 2
-    m_Bits: 64
+  weaponPivot: {fileID: 0}
   playerNum: 0
+  arrow: {fileID: 3460025935250461758, guid: 515d3ef80adba6545bc7a33b708b2032, type: 3}
   spellBolt: {fileID: 6810317361691381922, guid: e75f24052041cb3429b649e56b7b6f7b,
     type: 3}
-  arrow: {fileID: 3460025935250461758, guid: 515d3ef80adba6545bc7a33b708b2032, type: 3}
-  maxBowPullTime: 1.5
+  boxSize: {x: 1, y: 0.05}
+  boxOffset: {x: 0, y: -0.5}
 --- !u!120 &4042688449122760795
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -215,9 +214,7 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  m_Positions: []
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 0.25
