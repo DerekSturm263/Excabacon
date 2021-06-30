@@ -1,10 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Arrow : MonoBehaviour
 {
     private Rigidbody2D rb2D;
+
+    [HideInInspector] public float damage;
+    private bool isColliding;
 
     private void Awake()
     {
@@ -13,6 +14,20 @@ public class Arrow : MonoBehaviour
 
     private void Update()
     {
-        transform.right = -rb2D.velocity.normalized;
+        if (!isColliding)
+        {
+            transform.right = -rb2D.velocity.normalized;
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        isColliding = true;
+
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            collision.gameObject.GetComponent<PlayerController>().TakeDamage(damage);
+            Destroy(gameObject);
+        }
     }
 }

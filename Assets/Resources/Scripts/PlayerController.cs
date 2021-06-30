@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb2D;
     private Animator anim;
+    private LineRenderer lineRndr;
 
     private GameObject weapon;
     private GameObject weaponPivot;
@@ -33,6 +34,9 @@ public class PlayerController : MonoBehaviour
     public GameObject spellBolt;
     public GameObject arrow;
 
+    private float bowPullTime;
+    public float maxBowPullTime = 1f;
+
     private void Awake()
     {
         controls = new Controls();
@@ -41,17 +45,18 @@ public class PlayerController : MonoBehaviour
         controls.Player.Run.performed += ctx => Run(ctx.ReadValue<float>() == 1f);
         controls.Player.Jump.performed += _ => Jump();
 
-        controls.Player.UseWeapon.performed += _ => StartUseWeapon();
+        controls.Player.UseWeapon.started += _ => StartUseWeapon();
         controls.Player.UseWeapon.canceled += _ => EndUseWeapon();
         controls.Player.UseAbility.performed += _ => UseAbility();
         controls.Player.UseItem.performed += _ => UseItem();
 
-        playerClass = PlayerTypes.RobinHog;
+        playerClass = PlayerTypes.PorkChops;
         weaponClass = WeaponTypes.Bow;
-        abilityClass = AbilityTypes.SuperShot;
+        abilityClass = AbilityTypes.DirtDash;
 
         rb2D = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        lineRndr = GetComponent<LineRenderer>();
 
         weapon = GetComponentInChildren<Weapon>().gameObject;
         weaponPivot = weapon.transform.parent.gameObject;
@@ -76,6 +81,20 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         Move(controls.Player.Movement.ReadValue<Vector2>());
+
+        if (bowPullTime > 0f)
+        {
+            if (bowPullTime < maxBowPullTime)
+            {
+                bowPullTime += Time.deltaTime;
+            }
+            else
+            {
+                bowPullTime = maxBowPullTime;
+            }
+
+            RenderThrowingArc(weaponPivot.transform.right, bowPullTime * 3.125f, 10);
+        }
     }
 
     #region Movement
@@ -166,7 +185,7 @@ public class PlayerController : MonoBehaviour
 
     public void PullBow()
     {
-
+        bowPullTime = 0.5f;
     }
 
     public void ReleaseBow()
@@ -174,7 +193,42 @@ public class PlayerController : MonoBehaviour
         GameObject newArrow = Instantiate(arrow);
         newArrow.transform.position = transform.position;
 
-        newArrow.GetComponent<Rigidbody2D>().AddForce(weaponPivot.transform.right * 10f, ForceMode2D.Impulse);
+        newArrow.GetComponent<Rigidbody2D>().AddForce(weaponPivot.transform.right * bowPullTime * 10f, ForceMode2D.Impulse);
+        newArrow.GetComponent<Arrow>().damage = weaponClass.damage;
+        bowPullTime = 0f;
+
+        RenderThrowingArc(Vector2.zero, 0, 0);
+    }
+
+    private void RenderThrowingArc(Vector2 throwVec, float velocity, int resolution)
+    {
+        lineRndr.positionCount = resolution;
+
+        float angle = Mathf.Atan2(throwVec.y, throwVec.x);
+        float maxDistance = (velocity * velocity * Mathf.Sin(2 * angle)) / 2f;
+
+        lineRndr.SetPositions(CalculateThrowingPositions(resolution, maxDistance, angle, velocity));
+    }
+
+    private Vector3[] CalculateThrowingPositions(int resolution, float maxDistance, float angle, float velocity)
+    {
+        Vector3[] positions = new Vector3[resolution];
+
+        for (int i = 0; i < resolution; ++i)
+        {
+            float t = (float)i / (float)resolution;
+            positions[i] = CalculateArcPoint(t, maxDistance, angle, velocity);
+        }
+
+        return positions;
+    }
+
+    private Vector2 CalculateArcPoint(float t, float maxDistance, float angle, float velocity)
+    {
+        float x = t * maxDistance;
+        float y = x * Mathf.Tan(angle) - (2f * x * x / (2 * velocity * velocity * Mathf.Cos(angle) * Mathf.Cos(angle)));
+
+        return new Vector2(x, y);
     }
 
     #endregion

@@ -13,7 +13,8 @@ public static class WeaponTypes
     {
         player.PullBow();
     }
-    ), new System.Action<PlayerController>((player) =>
+    ),
+        new System.Action<PlayerController>((player) =>
     {
         player.ReleaseBow();
     }));
