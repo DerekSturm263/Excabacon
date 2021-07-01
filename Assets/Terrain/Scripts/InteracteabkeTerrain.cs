@@ -18,11 +18,44 @@ public class InteracteabkeTerrain : MonoBehaviour, ModifyTerrain
         
     }
 
-
+    
     public void DestroyTerrain(Vector3 position, int radius)
     {
-        Vector3Int tile_pos = Vector3Int.RoundToInt(position);
+       if(radius == 0){
+           Debug.LogError("Radius is 0! things will not work properly");
+       }
+        float count_X = 0;
+        float count_Y = 0;
         
-        terrain.SetTile(tile_pos,null);
+        if(radius > 1)
+        {
+            for(int i = 0; i < radius * radius;i++ )
+            {
+            
+                if(count_X >= radius){
+                    count_X = 0;
+                    count_Y += 1;
+                    count_X += 1;
+                }   else
+                {
+                    count_X += 1;
+                }
+                
+                Vector3 radiusOffsetPosition = new Vector3(position.x - (radius/2 +1 ) + count_X,position.y - (radius/2 )+ count_Y,0);
+                
+                Vector3Int tile_pos = Vector3Int.RoundToInt(radiusOffsetPosition);
+                
+                terrain.SetTile(tile_pos,null);
+            
+            }
+
+        }else
+        {
+            Vector3Int tile_pos = Vector3Int.RoundToInt(position);
+            terrain.SetTile(tile_pos,null);
+        }
+      
+
+
     }
 }

@@ -10,11 +10,16 @@ public class GameController : MonoBehaviour
     public GameObject[] spawnPoints;
 
     public GameObject Terrain;
+
+    [System.NonSerialized]
+    public ModifyTerrain TerrainInterface;
     
     private void Awake()
     {
         spawnPoints = GameObject.FindGameObjectsWithTag("Spawn Point");
 
+        TerrainInterface = Terrain.GetComponent<ModifyTerrain>();
+        
         for (int i = 0; i < Gamepad.all.Count; ++i)
         {
             huds[i].SetActive(true);
