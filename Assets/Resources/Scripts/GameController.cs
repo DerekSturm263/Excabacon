@@ -9,6 +9,8 @@ public class GameController : MonoBehaviour
 
     public GameObject[] spawnPoints;
 
+    public GameObject Terrain;
+    
     private void Awake()
     {
         spawnPoints = GameObject.FindGameObjectsWithTag("Spawn Point");

@@ -21,6 +21,8 @@ public class InteracteabkeTerrain : MonoBehaviour, ModifyTerrain
 
     public void DestroyTerrain(Vector3 position, int radius)
     {
-        print("not currently implemented");
+        Vector3Int tile_pos = Vector3Int.RoundToInt(position);
+        
+        terrain.SetTile(tile_pos,null);
     }
 }
