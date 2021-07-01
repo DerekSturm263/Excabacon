@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using UnityEditor.Tilemaps;
+
 using System.Threading;
 public class TileTerrainTestScript : MonoBehaviour
 {
@@ -28,7 +30,7 @@ public class TileTerrainTestScript : MonoBehaviour
         terrain.ClearAllTiles();
         
         
-        MakeBox();
+        //MakeBox();
         TileLoop();
     }
     
@@ -44,7 +46,7 @@ public class TileTerrainTestScript : MonoBehaviour
         terrain.SetTile(new Vector3Int(Tiles.MaxTileBounds.x,Tiles.MaxTileBounds.y,0),Tiles.TileToPlace);
 
         // fills it
-        terrain.BoxFill(Vector3Int.RoundToInt(transform.position),Tiles.TileToPlace,Tiles.MinTileBounds.x, Tiles.MinTileBounds.y,Tiles.MaxTileBounds.x,Tiles.MaxTileBounds.y);
+        //terrain.BoxFill(Vector3Int.RoundToInt(transform.position),Tiles.TileToPlace,Tiles.MinTileBounds.x, Tiles.MinTileBounds.y,Tiles.MaxTileBounds.x,Tiles.MaxTileBounds.y);
     }
     //loops through all tiles after box is created to subtract holes for caves
     private void TileLoop()
@@ -58,14 +60,16 @@ public class TileTerrainTestScript : MonoBehaviour
         
         float noise_value;
         
-
+        int TileSize = (Mathf.Abs(Tiles.MinTileBounds.x) + Mathf.Abs(Tiles.MaxTileBounds.x)) *(Mathf.Abs(Tiles.MinTileBounds.y) + Mathf.Abs(Tiles.MaxTileBounds.y));
+        
         TileBase[] terrain_tiles = terrain.GetTilesBlock(terrain.cellBounds);
         
-        for(int i =0; i <terrain_tiles.Length; i++)
+        for(int i =0; i <TileSize; i++)
         {
             if(count_X >= Tiles.MaxTileBounds.x -Tiles.MinTileBounds.x){
                 count_X = 0;
                 count_Y += 1;
+                count_X += 1;
             }   else
             {
                 count_X += 1;
@@ -83,7 +87,12 @@ public class TileTerrainTestScript : MonoBehaviour
             if(noisePlusGradient > NoiseGeneration.NoiseThreshold && !TerrainDebug.DebugNoise)
             {
                 SubtractTile(Vector2Int.RoundToInt(new Vector2(TilePos_X,Tilepos_Y)));
+            }else
+            {
+                terrain.SetTile(Vector3Int.RoundToInt(new Vector3(TilePos_X,Tilepos_Y,0)),Tiles.TileToPlace) ;
             }
+            
+            
             if(TerrainDebug.DebugNoise){
                 DebugNoise(Vector3Int.RoundToInt(new Vector3(TilePos_X,Tilepos_Y,0)),noisePlusGradient );
             }
@@ -166,7 +175,7 @@ public class TileTerrainTestScript : MonoBehaviour
     [System.Serializable]
     public class TileProperties
     {
-        public Tile TileToPlace;
+        public TileBase TileToPlace;
     
         public Vector2Int MinTileBounds = new Vector2Int(-4,-4);
         public Vector2Int MaxTileBounds = new Vector2Int(4,4);
