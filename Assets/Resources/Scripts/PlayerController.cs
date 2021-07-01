@@ -21,6 +21,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb2D;
     private Animator anim;
     private LineRenderer lineRndr;
+    private BoxCollider2D col2D;
 
     private GameObject weapon;
     [HideInInspector] public GameObject weaponPivot;
@@ -47,6 +48,9 @@ public class PlayerController : MonoBehaviour
     private bool isWeaponUpdate;
     private bool isAbilityUpdate;
 
+    private Vector2 dashVec;
+    private bool isDashDigging;
+
     [Header("Boxcast Settings")]
     public Vector2 boxSize;
     public Vector2 boxOffset;
@@ -72,6 +76,7 @@ public class PlayerController : MonoBehaviour
         rb2D = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         lineRndr = GetComponent<LineRenderer>();
+        col2D = GetComponent<BoxCollider2D>();
 
         weapon = GetComponentInChildren<Weapon>().gameObject;
         weaponPivot = weapon.transform.parent.gameObject;
@@ -109,13 +114,24 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Move(controls.Player.Movement.ReadValue<Vector2>());
+        if (!isDashDigging)
+        {
+            if (dashVec.magnitude > 0.25f)
+            {
+                dashVec -= dashVec.normalized * Time.deltaTime * 100f;
+                rb2D.velocity = dashVec;
+            }
+            else
+            {
+                Move(controls.Player.Movement.ReadValue<Vector2>());
+                dashVec = Vector2.zero;
+            }
+        }
 
         if (isWeaponUpdate)
         {
             WeaponUpdate();
         }
-
         if (isAbilityUpdate)
         {
             AbilityUpdate();
@@ -239,7 +255,7 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void Pickaxe()
+    public void SwingWeapon()
     {
 
     }
@@ -287,9 +303,10 @@ public class PlayerController : MonoBehaviour
 
     #region Abilities
 
-    public void Dash()
+    public void Dash(float dashDist)
     {
-
+        rb2D.velocity = Vector2.zero;
+        dashVec = controls.Player.Movement.ReadValue<Vector2>().normalized * dashDist;
     }
 
     #endregion
@@ -363,6 +380,33 @@ public class PlayerController : MonoBehaviour
         float y = x * Mathf.Tan(angle) - (2f * x * x / (2 * velocity * velocity * Mathf.Cos(angle) * Mathf.Cos(angle)));
 
         return new Vector2(x, y);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (dashVec.magnitude > 0.125f && collision.gameObject.layer << ground != 0)
+        {
+            isDashDigging = true;
+
+            col2D.isTrigger = true;
+            rb2D.gravityScale = 0f;
+            rb2D.velocity = playerClass.undergroundSpeed * dashVec.normalized * 1.5f;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (!isDashDigging)
+            return;
+
+        if (collision.gameObject.layer << ground != 0)
+        {
+            isDashDigging = false;
+
+            col2D.isTrigger = false;
+            rb2D.gravityScale = 5f;
+            rb2D.velocity = Vector2.zero;
+        }
     }
 
     private void OnEnable()
