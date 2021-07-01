@@ -4,7 +4,7 @@ public static class AbilityTypes
 
     public static AbilityType DirtDash = new AbilityType(name: "Dirt Dash", icon: iconSpriteSheet[0], damage: 8, rechargeTime: 0, manaUse: 0, new System.Action<PlayerController>((player) =>
     {
-        player.Dash();
+        player.Dash(27.5f);
     }));
 
     public static AbilityType MudMash = new AbilityType("Mud Mash", iconSpriteSheet[1], 14, 6, 0, new System.Action<PlayerController>((player) =>
