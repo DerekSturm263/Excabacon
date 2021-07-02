@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface ModifyTerrain
 {
-    void DestroyTerrain(Vector3 position,int radius);
+    void DestroyTerrain(Vector3 position,int radius,out bool Hitblock);
 }
