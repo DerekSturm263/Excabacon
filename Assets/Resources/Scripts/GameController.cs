@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
     public GameObject Terrain;
 
     [System.NonSerialized]
-    public ModifyTerrain TerrainInterface;
+    public static ModifyTerrain TerrainInterface;
     
     private void Awake()
     {
