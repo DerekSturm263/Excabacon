@@ -81,8 +81,8 @@ public class PlayerController : MonoBehaviour
         weapon = GetComponentInChildren<Weapon>().gameObject;
         weaponPivot = weapon.transform.parent.gameObject;
 
-        playerClass = PlayerTypes.RobinHog;
-        weaponClass = WeaponTypes.Bow;
+        playerClass = PlayerTypes.PorkChops;
+        weaponClass = WeaponTypes.Drill;
         abilityClass = AbilityTypes.SuperShot;
 
         currentSpeed = playerClass.walkSpeed;
@@ -251,7 +251,8 @@ public class PlayerController : MonoBehaviour
 
     public void Mine(int size)
     {
-        GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, size);
+         
+        GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, size,out bool block_ishit);
         rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
     }
 
