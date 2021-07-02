@@ -81,9 +81,9 @@ public class PlayerController : MonoBehaviour
         weapon = GetComponentInChildren<Weapon>().gameObject;
         weaponPivot = weapon.transform.parent.gameObject;
 
-        playerClass = PlayerTypes.PorkChops;
+        playerClass = PlayerTypes.RobinHog;
         weaponClass = WeaponTypes.Bow;
-        abilityClass = AbilityTypes.DirtDash;
+        abilityClass = AbilityTypes.SuperShot;
 
         currentSpeed = playerClass.walkSpeed;
         hpMana = new AlterableStats(playerClass.hp, playerClass.mana);
@@ -169,8 +169,11 @@ public class PlayerController : MonoBehaviour
         if (weaponClass.manaUse > hpMana.currentMana)
             return;
 
+        if (weaponClass.actionStart != null)
+        {
+            weaponClass.actionStart.Invoke(this);
+        }
         UseMana(weaponClass.manaUse);
-        weaponClass.actionStart.Invoke(this);
 
         if (weaponClass.actionUpdate != null)
         {
@@ -204,8 +207,11 @@ public class PlayerController : MonoBehaviour
         if (abilityClass.manaUse > hpMana.currentMana)
             return;
 
+        if (abilityClass.actionStart != null)
+        {
+            abilityClass.actionStart.Invoke(this);
+        }
         UseMana(abilityClass.manaUse);
-        abilityClass.actionStart.Invoke(this);
 
         if (abilityClass.actionUpdate != null)
         {
@@ -243,9 +249,10 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    public void Mine(float size)
+    public void Mine(int size)
     {
-
+        GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, size);
+        rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
     }
 
     #region Weapons

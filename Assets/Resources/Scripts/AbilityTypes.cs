@@ -19,6 +19,6 @@ public static class AbilityTypes
 
     public static AbilityType SuperShot = new AbilityType("Super Shot", iconSpriteSheet[3], 4, 6, 0, new System.Action<PlayerController>((player) =>
     {
-        
+        player.BowEnd();
     }));
 }
