@@ -34,13 +34,16 @@ public class GameSetupUIController : MonoBehaviour
         players.SetActive(false);
         stages.SetActive(false);
 
-        controls.UI.CycleLeft.performed += ctx => SwitchPlayer(Player.PlayerFromDevice(ctx.control.device), -1);
-        controls.UI.CycleRight.performed += ctx => SwitchPlayer(Player.PlayerFromDevice(ctx.control.device), 1);
+        controls.UI.CycleLeft.started += ctx => SwitchPlayer(Player.PlayerFromDevice(ctx.control.device), -1);
+        controls.UI.CycleRight.started += ctx => SwitchPlayer(Player.PlayerFromDevice(ctx.control.device), 1);
 
+        // Default values.
         GameController.gameSettings = new GameSettings();
         GameController.gameSettings.players = new PlayerSettings[4];
         GameController.gameSettings.stocks = 5;
         GameController.gameSettings.matchTime = 180f;
+        GameController.gameSettings.itemSettings.itemSpawnRate = 2;
+        GameController.gameSettings.itemSettings.items = ItemTypes.allItemTypes;
 
         foreach (InputDevice device in InputSystem.devices)
         {

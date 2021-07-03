@@ -10,6 +10,7 @@ TagManager:
   - Icon
   - Weapon
   - Ability
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Ground
   - Projectile
   - Player
-  - 
+  - Item
   - 
   - 
   - 
