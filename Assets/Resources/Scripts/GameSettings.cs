@@ -2,7 +2,7 @@
 {
     public enum GameMode : byte
     {
-        Last_Pig_Standing, Relic_King, Raid_Battle
+        Last_Pig_Standing, Relic_King, Treasure_Hunt, Raid_Battle
     }
     public GameMode gameMode;
 

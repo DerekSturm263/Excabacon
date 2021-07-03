@@ -8,12 +8,14 @@ public static class WeaponTypes
         null, new System.Action<PlayerController>((player) =>
         {
             player.Mine(2);
+            player.weapon.CheckForImpact();
         })
     );
     public static WeaponType Pickaxe = new WeaponType("Pickaxe", iconSpriteSheet[1], 8, 4, 2, 0, 
         new System.Action<PlayerController>((player) =>
         {
             player.Mine(4);
+            player.weapon.CheckForImpact();
         })
     );
     public static WeaponType Spell = new WeaponType("Spell", iconSpriteSheet[2], 10, 0, 6, 4,

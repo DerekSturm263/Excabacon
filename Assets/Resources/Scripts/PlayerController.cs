@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
 
     private AlterableStats alterableStats;
 
-    public Item currentItem;
+    [HideInInspector] public Item currentItem;
 
     private float currentSpeed;
 
@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D col2D;
     private SpriteRenderer sprtRndr;
 
-    private GameObject weapon;
+    [HideInInspector] public Weapon weapon;
     [HideInInspector] public GameObject weaponPivot;
 
     [HideInInspector] public int playerNum;
@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
 
     private UnityEngine.UI.Image healthBar;
     private UnityEngine.UI.Image manaBar;
+    private TMPro.TMP_Text stockCount;
 
     public GameObject arrow;
 
@@ -82,7 +83,7 @@ public class PlayerController : MonoBehaviour
         col2D = GetComponent<BoxCollider2D>();
         sprtRndr = GetComponent<SpriteRenderer>();
 
-        weapon = GetComponentInChildren<Weapon>().gameObject;
+        weapon = GetComponentInChildren<Weapon>();
         weaponPivot = weapon.transform.parent.gameObject;
     }
 
@@ -266,8 +267,8 @@ public class PlayerController : MonoBehaviour
 
         currentSpeed = playerClass.walkSpeed;
         alterableStats = new AlterableStats(playerClass.hp, playerClass.mana, GameController.gameSettings.stocks);
-        Spawn();
 
+        Spawn();
         SetupHUD();
     }
 
@@ -281,24 +282,29 @@ public class PlayerController : MonoBehaviour
 
     private void SetupHUD()
     {
-        UnityEngine.UI.Image[] hud = GameObject.FindGameObjectsWithTag("HUD")[playerNum].GetComponentsInChildren<UnityEngine.UI.Image>();
+        GameObject hud = GameObject.FindGameObjectsWithTag("HUD")[playerNum];
+        UnityEngine.UI.Image[] hudImages = hud.GetComponentsInChildren<UnityEngine.UI.Image>();
 
-        healthBar = hud[0];
-        manaBar = hud[1];
+        healthBar = hudImages[0];
+        manaBar = hudImages[1];
 
-        playerIcon = hud[2];
+        playerIcon = hudImages[2];
         playerIcon.sprite = playerClass.icon;
 
-        weaponIcon = hud[3];
+        weaponIcon = hudImages[3];
         weaponIcon.sprite = weaponClass.icon;
 
-        abilityIcon = hud[4];
+        abilityIcon = hudImages[4];
         abilityIcon.sprite = abilityClass.icon;
+
+        stockCount = hud.GetComponentsInChildren<TMPro.TMP_Text>()[1];
 
         if (playerClass.mana == 0)
         {
             manaBar.enabled = false;
         }
+
+        stockCount.text = "x" + alterableStats.stocks;
     }
 
     public void Mine(int size)
@@ -313,19 +319,13 @@ public class PlayerController : MonoBehaviour
 
     #region Weapons
 
-    public void Drill()
-    {
-
-    }
-
-    public void SwingWeapon()
-    {
-
-    }
-
     public void Spell()
     {
+        GameObject newSpell = Instantiate(spellBolt);
+        newSpell.transform.position = transform.position;
 
+        newSpell.GetComponent<Rigidbody2D>().velocity = (weaponPivot.transform.right * 10f);
+        newSpell.GetComponent<Projectile>().owner = this;
     }
 
     public void BowStart(int arrowCount, float distance, float maxPullTime)
@@ -355,7 +355,7 @@ public class PlayerController : MonoBehaviour
             newArrow.transform.position = transform.position;
 
             newArrow.GetComponent<Rigidbody2D>().AddForce(weaponPivot.transform.right * bowPullTime * 10f * bowForce, ForceMode2D.Impulse);
-            newArrow.GetComponent<Arrow>().damage = weaponClass.damage;
+            newArrow.GetComponent<Projectile>().owner = this;
         }
 
         bowPullTime = 0f;
@@ -376,14 +376,15 @@ public class PlayerController : MonoBehaviour
 
     #region Stats
 
-    public float CalcDamage()
+    public static float CalcDamage(PlayerController attacker, PlayerController defender)
     {
-        return playerClass.damage * weaponClass.damage;
+        return attacker.weaponClass.damage * attacker.playerClass.damage / defender.playerClass.defense;
     }
 
-    public void DealDamage(PlayerController target, float damage)
+    public void DealDamage(PlayerController target)
     {
-        target.TakeDamage(damage);
+        target.TakeDamage(CalcDamage(this, target));
+        target.TakeKnockback(transform.position, this.weaponClass.knockback);
     }
 
     public void TakeDamage(float damage)
@@ -398,6 +399,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void TakeKnockback(Vector2 hitLoc, float force)
+    {
+        rb2D.AddForce((hitLoc - (Vector2) transform.position) * force);
+    }
+
     public void UseMana(float manaUse)
     {
         alterableStats.currentMana -= manaUse;
@@ -408,6 +414,7 @@ public class PlayerController : MonoBehaviour
     public void Die()
     {
         --alterableStats.stocks;
+        stockCount.text = "x" + alterableStats.stocks;
         Spawn(); 
     }
 

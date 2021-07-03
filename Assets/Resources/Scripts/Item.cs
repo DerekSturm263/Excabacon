@@ -38,7 +38,7 @@ public class Item : MonoBehaviour
 
     public void Throw()
     {
-        rb2D.AddForce(new Vector2(5f * (carrier.GetComponent<SpriteRenderer>().flipX ? -1f : 1f), 5f), ForceMode2D.Impulse);
+        rb2D.AddForce(new Vector2((carrier.GetComponent<SpriteRenderer>().flipX ? -10f : 10f), 10f), ForceMode2D.Impulse);
 
         carrier = null;
         used = true;
