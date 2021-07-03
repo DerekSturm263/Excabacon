@@ -9,7 +9,7 @@ public class TileTerrainTestScript : MonoBehaviour
 {
     // Start is called before the first frame update
     [Header("Options")]
-    Tilemap terrain;
+    public Tilemap terrain;
     public TileProperties Tiles;
     public PerlinProperties NoiseGeneration;
 
@@ -17,7 +17,8 @@ public class TileTerrainTestScript : MonoBehaviour
     public TerrainDebugProperties TerrainDebug;
     
     public bool GenerateOnGameStart = true;
-  
+    
+    public TerrainModifierStack modstack;
     void Start()
     {    
         if(GenerateOnGameStart)
@@ -26,7 +27,7 @@ public class TileTerrainTestScript : MonoBehaviour
     }
     public void BuildTerrain()
     {
-        terrain = GetComponent<Tilemap>();
+        //terrain = GetComponent<Tilemap>();
         terrain.ClearAllTiles();
         
         
@@ -78,7 +79,8 @@ public class TileTerrainTestScript : MonoBehaviour
             TilePos_X = Tiles.MinTileBounds.x + count_X;
             Tilepos_Y = Tiles.MinTileBounds.y + count_Y;
             
-            noise_value = GenerateNoise(new Vector2(TilePos_X,Tilepos_Y),randomiser);
+            //noise_value = GenerateNoise(new Vector2(TilePos_X,Tilepos_Y),randomiser);
+            noise_value = modstack.CalculateAll(new Vector2(TilePos_X,Tilepos_Y));
             
             float noise_value_minMax = Remap(noise_value,NoiseGeneration.PerlinMinMax.x,NoiseGeneration.PerlinMinMax.y);      
             float gradient_test = generateGradient(new Vector2(count_X,count_Y));
@@ -163,7 +165,7 @@ public class TileTerrainTestScript : MonoBehaviour
     }
 
     // remap function, used for remapping the perlin noise to allow for higher or lower scales but could also be turned into a function library thingy maybe later if needed?
-    float Remap(float Value ,float min,float max)
+    public static float Remap(float Value ,float min,float max)
     {
         
         float remapped = 0 + (Value - min) * (1 - 0)/ (max - min);
