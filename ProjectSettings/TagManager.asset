@@ -6,6 +6,10 @@ TagManager:
   tags:
   - HUD
   - Spawn Point
+  - Name
+  - Icon
+  - Weapon
+  - Ability
   layers:
   - Default
   - TransparentFX

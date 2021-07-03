@@ -2,6 +2,8 @@ public static class WeaponTypes
 {
     private static UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/weapon_icons");
 
+    public static System.Collections.Generic.List<WeaponType> allWeaponTypes = new System.Collections.Generic.List<WeaponType>();
+
     public static WeaponType Drill = new WeaponType(name: "Drill", icon: iconSpriteSheet[0], damage: 4, knockback: 2, speed: 0, manaUse: 0,
         null, new System.Action<PlayerController>((player) =>
         {
@@ -30,4 +32,9 @@ public static class WeaponTypes
             player.BowEnd();
         })
     );
+
+    public static WeaponType WeaponFromInt(int key)
+    {
+        return allWeaponTypes[key];
+    }
 }

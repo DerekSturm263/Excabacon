@@ -27,5 +27,7 @@ public class WeaponType
         this.actionStart = actionStart;
         this.actionUpdate = actionUpdate;
         this.actionEnd = actionEnd;
+
+        WeaponTypes.allWeaponTypes.Add(this);
     }
 }

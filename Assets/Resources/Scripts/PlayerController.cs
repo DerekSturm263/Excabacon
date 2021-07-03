@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public GameObject weaponPivot;
 
     [HideInInspector] public int playerNum;
+    [HideInInspector] public int teamNum;
 
     // HUD Settings.
     private UnityEngine.UI.Image playerIcon;
@@ -80,36 +81,6 @@ public class PlayerController : MonoBehaviour
 
         weapon = GetComponentInChildren<Weapon>().gameObject;
         weaponPivot = weapon.transform.parent.gameObject;
-
-        playerClass = PlayerTypes.PorkChops;
-        weaponClass = WeaponTypes.Drill;
-        abilityClass = AbilityTypes.SuperShot;
-
-        currentSpeed = playerClass.walkSpeed;
-        hpMana = new AlterableStats(playerClass.hp, playerClass.mana);
-
-        #region HUD Setting
-
-        UnityEngine.UI.Image[] hud = GameObject.FindGameObjectsWithTag("HUD")[playerNum].GetComponentsInChildren<UnityEngine.UI.Image>();
-
-        healthBar = hud[0];
-        manaBar = hud[1];
-
-        playerIcon = hud[2];
-        playerIcon.sprite = playerClass.icon;
-
-        weaponIcon = hud[3];
-        weaponIcon.sprite = weaponClass.icon;
-
-        abilityIcon = hud[4];
-        abilityIcon.sprite = abilityClass.icon;
-
-        if (playerClass.mana == 0)
-        {
-            manaBar.enabled = false;
-        }
-
-        #endregion
     }
 
     private void Update()
@@ -244,16 +215,58 @@ public class PlayerController : MonoBehaviour
         if (currentItem == null)
             return;
 
-        currentItem.useAction.Invoke();
+        currentItem.useAction.Invoke(this);
     }
 
     #endregion
 
+    public void Setup(PlayerType playerType, WeaponType weaponType, AbilityType abilityType, int playerNum, int teamNum)
+    {
+        playerClass = playerType;
+        weaponClass = weaponType;
+        abilityClass = abilityType;
+
+        this.playerNum = playerNum;
+        this.teamNum = teamNum;
+
+        transform.position = GameController.spawnPoints[playerNum].transform.position;
+
+        currentSpeed = playerClass.walkSpeed;
+        hpMana = new AlterableStats(playerClass.hp, playerClass.mana);
+
+        SetupHUD();
+    }
+
+    private void SetupHUD()
+    {
+        UnityEngine.UI.Image[] hud = GameObject.FindGameObjectsWithTag("HUD")[playerNum].GetComponentsInChildren<UnityEngine.UI.Image>();
+
+        healthBar = hud[0];
+        manaBar = hud[1];
+
+        playerIcon = hud[2];
+        playerIcon.sprite = playerClass.icon;
+
+        weaponIcon = hud[3];
+        weaponIcon.sprite = weaponClass.icon;
+
+        abilityIcon = hud[4];
+        abilityIcon.sprite = abilityClass.icon;
+
+        if (playerClass.mana == 0)
+        {
+            manaBar.enabled = false;
+        }
+    }
+
     public void Mine(int size)
     {
-         
-        GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, size,out bool block_ishit);
+        GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, size, out bool hasMined);
+
         rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
+        if (hasMined)
+        {
+        }
     }
 
     #region Weapons
