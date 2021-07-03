@@ -18,6 +18,8 @@ public class GameSetupUIController : MonoBehaviour
 
     public GameObject[] playerButtons;
 
+    public TMPro.TMP_Text instructionLabel;
+
     public TMPro.TMP_Text[] playerNames = new TMPro.TMP_Text[4];
     public UnityEngine.UI.Image[] playerIcons = new UnityEngine.UI.Image[4];
     public UnityEngine.UI.Image[] weaponIcons = new UnityEngine.UI.Image[4];
@@ -81,6 +83,7 @@ public class GameSetupUIController : MonoBehaviour
         gamemodes.SetActive(false);
         players.SetActive(true);
 
+        instructionLabel.text = "Choose Your Characters";
         eventSystem.SetSelectedGameObject(players.GetComponentsInChildren<UnityEngine.UI.Button>()[0].gameObject);
     }
 
@@ -122,6 +125,7 @@ public class GameSetupUIController : MonoBehaviour
         players.SetActive(false);
         stages.SetActive(true);
 
+        instructionLabel.text = "Choose The Stage";
         eventSystem.SetSelectedGameObject(stages.GetComponentsInChildren<UnityEngine.UI.Button>()[0].gameObject);
     }
 
