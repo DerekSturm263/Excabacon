@@ -16,12 +16,17 @@ public static class WeaponTypes
             player.Mine(4);
         })
     );
-    public static WeaponType Spell = new WeaponType("Spell", iconSpriteSheet[2], 10, 0, 6, 4);
+    public static WeaponType Spell = new WeaponType("Spell", iconSpriteSheet[2], 10, 0, 6, 4,
+        new System.Action<PlayerController>((player) =>
+        {
+            player.Spell();
+        })
+    );
 
     public static WeaponType Bow = new WeaponType("Bow", iconSpriteSheet[3], 6, 2, 0, 0,
         new System.Action<PlayerController>((player) =>
         {
-            player.BowStart(1, 1.5f, 1f);
+            player.BowStart(1, 3f, 0.5f);
         }),
             new System.Action<PlayerController>((player) =>
         {

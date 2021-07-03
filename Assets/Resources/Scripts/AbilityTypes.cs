@@ -19,10 +19,20 @@ public static class AbilityTypes
         
     }));
 
-    public static AbilityType SuperShot = new AbilityType("Super Shot", iconSpriteSheet[3], 4, 6, 0, new System.Action<PlayerController>((player) =>
-    {
-        player.BowEnd();
-    }));
+    public static AbilityType SuperShot = new AbilityType("Super Shot", iconSpriteSheet[3], 4, 6, 0,
+        new System.Action<PlayerController>((player) =>
+        {
+            player.BowStart(3, 2f, 1f);
+        }),
+        new System.Action<PlayerController>((player) =>
+        {
+            player.BowUpdate();
+        }),
+        new System.Action<PlayerController>((player) =>
+        {
+            player.BowEnd();
+        })
+    );
 
     public static AbilityType AbilityFromInt(int key)
     {
