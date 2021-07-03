@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-[ExecuteInEditMode]
+[ExecuteAlways]
 public class TerrainModifierStack : MonoBehaviour
 {
     public List<TerrainModifier> modifiers;

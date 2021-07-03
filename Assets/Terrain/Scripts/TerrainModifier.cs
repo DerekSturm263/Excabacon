@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 //[CustomEditor(typeof(TerrainModifier))]
-
+[ExecuteAlways]
 public enum modtype
     {
         None,Perlin_Noise,Random_Noise
@@ -23,12 +23,12 @@ public class TerrainModifier
     
     //global parameters
     public float opacity;
-    Vector2 Position; 
+    public Vector2 Position; 
     //perlin noise paramters
-    float perlinscale_Mod = 0; 
+    public float perlinscale_Mod = 0; 
 
-    float perlin_Seed;
-    Vector2 perlin_Scale;
+    public float perlin_Seed;
+    public Vector2 perlin_Scale;
      
     
     public void NodeDisplayUpdate()
