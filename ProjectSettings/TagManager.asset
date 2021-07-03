@@ -6,6 +6,11 @@ TagManager:
   tags:
   - HUD
   - Spawn Point
+  - Name
+  - Icon
+  - Weapon
+  - Ability
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -16,7 +21,7 @@ TagManager:
   - Ground
   - Projectile
   - Player
-  - 
+  - Item
   - 
   - 
   - 

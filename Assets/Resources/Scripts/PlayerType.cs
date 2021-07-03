@@ -31,5 +31,7 @@ public class PlayerType
         this.damage = damage;
         this.knockback = knockback;
         this.attackSpeed = attackSpeed;
+
+        PlayerTypes.allPlayerTypes.Add(this);
     }
 }

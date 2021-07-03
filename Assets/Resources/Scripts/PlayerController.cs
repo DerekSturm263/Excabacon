@@ -7,14 +7,15 @@ public class PlayerController : MonoBehaviour
 {
     public Controls controls;
     private LayerMask ground = 1 << 6;
+    private LayerMask item = 1 << 9;
 
     public PlayerType playerClass;
     public AbilityType abilityClass;
     public WeaponType weaponClass;
 
-    private AlterableStats hpMana;
+    private AlterableStats alterableStats;
 
-    public ItemType currentItem;
+    public Item currentItem;
 
     private float currentSpeed;
 
@@ -22,11 +23,13 @@ public class PlayerController : MonoBehaviour
     private Animator anim;
     private LineRenderer lineRndr;
     private BoxCollider2D col2D;
+    private SpriteRenderer sprtRndr;
 
     private GameObject weapon;
     [HideInInspector] public GameObject weaponPivot;
 
     [HideInInspector] public int playerNum;
+    [HideInInspector] public int teamNum;
 
     // HUD Settings.
     private UnityEngine.UI.Image playerIcon;
@@ -71,45 +74,16 @@ public class PlayerController : MonoBehaviour
         controls.Player.UseAbility.canceled += _ => AbilityEnd();
 
         // Misc.
-        controls.Player.UseItem.performed += _ => UseItem();
+        controls.Player.UseItem.started += _ => PickupOrUseItem();
 
         rb2D = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         lineRndr = GetComponent<LineRenderer>();
         col2D = GetComponent<BoxCollider2D>();
+        sprtRndr = GetComponent<SpriteRenderer>();
 
         weapon = GetComponentInChildren<Weapon>().gameObject;
         weaponPivot = weapon.transform.parent.gameObject;
-
-        playerClass = PlayerTypes.PorkChops;
-        weaponClass = WeaponTypes.Drill;
-        abilityClass = AbilityTypes.SuperShot;
-
-        currentSpeed = playerClass.walkSpeed;
-        hpMana = new AlterableStats(playerClass.hp, playerClass.mana);
-
-        #region HUD Setting
-
-        UnityEngine.UI.Image[] hud = GameObject.FindGameObjectsWithTag("HUD")[playerNum].GetComponentsInChildren<UnityEngine.UI.Image>();
-
-        healthBar = hud[0];
-        manaBar = hud[1];
-
-        playerIcon = hud[2];
-        playerIcon.sprite = playerClass.icon;
-
-        weaponIcon = hud[3];
-        weaponIcon.sprite = weaponClass.icon;
-
-        abilityIcon = hud[4];
-        abilityIcon.sprite = abilityClass.icon;
-
-        if (playerClass.mana == 0)
-        {
-            manaBar.enabled = false;
-        }
-
-        #endregion
     }
 
     private void Update()
@@ -143,6 +117,15 @@ public class PlayerController : MonoBehaviour
     private void Move(Vector2 input)
     {
         rb2D.velocity = new Vector2(input.x * currentSpeed, rb2D.velocity.y);
+
+        if (rb2D.velocity.x < 0f)
+        {
+            sprtRndr.flipX = true;
+        }
+        else if (rb2D.velocity.x > 0f)
+        {
+            sprtRndr.flipX = false;
+        }
     }
 
     private void Aim(Vector2 input)
@@ -166,7 +149,7 @@ public class PlayerController : MonoBehaviour
     // Called when the player begins to use a weapon.
     private void WeaponStart()
     {
-        if (weaponClass.manaUse > hpMana.currentMana)
+        if (weaponClass.manaUse > alterableStats.currentMana)
             return;
 
         if (weaponClass.actionStart != null)
@@ -204,7 +187,7 @@ public class PlayerController : MonoBehaviour
     // Called when the player begins to use an ability.
     private void AbilityStart()
     {
-        if (abilityClass.manaUse > hpMana.currentMana)
+        if (abilityClass.manaUse > alterableStats.currentMana)
             return;
 
         if (abilityClass.actionStart != null)
@@ -239,21 +222,93 @@ public class PlayerController : MonoBehaviour
         abilityClass.actionEnd.Invoke(this);
     }
 
+    private void PickupOrUseItem()
+    {
+        if (currentItem != null)
+        {
+            UseItem();
+        }
+        else
+        {
+            PickupItem();
+        }
+    }
+
+    private void PickupItem()
+    {
+        RaycastHit2D results = Physics2D.BoxCast(transform.position, transform.localScale, 0f, Vector2.zero, 0f, item);
+
+        if (results && results.transform.gameObject != null)
+        {
+            Item item = results.transform.gameObject.GetComponent<Item>();
+
+            currentItem = item;
+            item.carrier = transform.gameObject;
+        }
+    }
+
     private void UseItem()
     {
-        if (currentItem == null)
-            return;
-
-        currentItem.useAction.Invoke();
+        currentItem.useAction.Invoke(currentItem);
+        currentItem = null;
     }
 
     #endregion
 
+    public void Setup(PlayerType playerType, WeaponType weaponType, AbilityType abilityType, int playerNum, int teamNum)
+    {
+        playerClass = playerType;
+        weaponClass = weaponType;
+        abilityClass = abilityType;
+
+        this.playerNum = playerNum;
+        this.teamNum = teamNum;
+
+        currentSpeed = playerClass.walkSpeed;
+        alterableStats = new AlterableStats(playerClass.hp, playerClass.mana, GameController.gameSettings.stocks);
+        Spawn();
+
+        SetupHUD();
+    }
+
+    private void Spawn()
+    {
+        transform.position = GameController.spawnPoints[playerNum].transform.position;
+
+        alterableStats.currentHP = playerClass.hp;
+        alterableStats.currentMana = playerClass.mana;
+    }
+
+    private void SetupHUD()
+    {
+        UnityEngine.UI.Image[] hud = GameObject.FindGameObjectsWithTag("HUD")[playerNum].GetComponentsInChildren<UnityEngine.UI.Image>();
+
+        healthBar = hud[0];
+        manaBar = hud[1];
+
+        playerIcon = hud[2];
+        playerIcon.sprite = playerClass.icon;
+
+        weaponIcon = hud[3];
+        weaponIcon.sprite = weaponClass.icon;
+
+        abilityIcon = hud[4];
+        abilityIcon.sprite = abilityClass.icon;
+
+        if (playerClass.mana == 0)
+        {
+            manaBar.enabled = false;
+        }
+    }
+
     public void Mine(int size)
     {
-         
-        GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, size,out bool block_ishit);
-        rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
+        GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, size, out bool hasMined);
+
+        if (hasMined)
+        {
+            rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
+        }
     }
 
     #region Weapons
@@ -333,16 +388,27 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        hpMana.currentHP -= (damage > hpMana.currentHP ? hpMana.currentHP : damage);
+        alterableStats.currentHP -= (damage > alterableStats.currentHP ? alterableStats.currentHP : damage);
 
-        healthBar.fillAmount = hpMana.currentHP / playerClass.hp;
+        healthBar.fillAmount = alterableStats.currentHP / playerClass.hp;
+
+        if (alterableStats.currentHP == 0f)
+        {
+            Die();
+        }
     }
 
     public void UseMana(float manaUse)
     {
-        hpMana.currentMana -= manaUse;
+        alterableStats.currentMana -= manaUse;
 
-        manaBar.fillAmount = hpMana.currentMana/ playerClass.mana;
+        manaBar.fillAmount = alterableStats.currentMana/ playerClass.mana;
+    }
+
+    public void Die()
+    {
+        --alterableStats.stocks;
+        Spawn(); 
     }
 
     #endregion

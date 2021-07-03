@@ -198,6 +198,74 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""UI"",
+            ""id"": ""cbee5113-31f2-43d5-bc9c-3ba889bfa10e"",
+            ""actions"": [
+                {
+                    ""name"": ""Cycle Left"",
+                    ""type"": ""Button"",
+                    ""id"": ""f3f6a015-bb4b-4261-bec4-01c2d6d71038"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Cycle Right"",
+                    ""type"": ""Button"",
+                    ""id"": ""59b56703-5b60-4a41-aa87-41dde9abf3d5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""57d4775b-16d7-41e6-9e02-4179f4b24628"",
+                    ""path"": ""<Gamepad>/dpad/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Cycle Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6dad08cd-84e8-4337-9525-75daf2bb55c4"",
+                    ""path"": ""<Gamepad>/leftStick/left"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Cycle Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""dc12aa54-19cc-4755-a138-2eee69a42fdf"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Cycle Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""df7b7bd3-c90d-419d-a493-d6b333ba9ec0"",
+                    ""path"": ""<Gamepad>/leftStick/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Cycle Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -223,6 +291,10 @@ public class @Controls : IInputActionCollection, IDisposable
         m_Player_UseWeapon = m_Player.FindAction("UseWeapon", throwIfNotFound: true);
         m_Player_UseAbility = m_Player.FindAction("UseAbility", throwIfNotFound: true);
         m_Player_UseItem = m_Player.FindAction("UseItem", throwIfNotFound: true);
+        // UI
+        m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
+        m_UI_CycleLeft = m_UI.FindAction("Cycle Left", throwIfNotFound: true);
+        m_UI_CycleRight = m_UI.FindAction("Cycle Right", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -349,6 +421,47 @@ public class @Controls : IInputActionCollection, IDisposable
         }
     }
     public PlayerActions @Player => new PlayerActions(this);
+
+    // UI
+    private readonly InputActionMap m_UI;
+    private IUIActions m_UIActionsCallbackInterface;
+    private readonly InputAction m_UI_CycleLeft;
+    private readonly InputAction m_UI_CycleRight;
+    public struct UIActions
+    {
+        private @Controls m_Wrapper;
+        public UIActions(@Controls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @CycleLeft => m_Wrapper.m_UI_CycleLeft;
+        public InputAction @CycleRight => m_Wrapper.m_UI_CycleRight;
+        public InputActionMap Get() { return m_Wrapper.m_UI; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(UIActions set) { return set.Get(); }
+        public void SetCallbacks(IUIActions instance)
+        {
+            if (m_Wrapper.m_UIActionsCallbackInterface != null)
+            {
+                @CycleLeft.started -= m_Wrapper.m_UIActionsCallbackInterface.OnCycleLeft;
+                @CycleLeft.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnCycleLeft;
+                @CycleLeft.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnCycleLeft;
+                @CycleRight.started -= m_Wrapper.m_UIActionsCallbackInterface.OnCycleRight;
+                @CycleRight.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnCycleRight;
+                @CycleRight.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnCycleRight;
+            }
+            m_Wrapper.m_UIActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @CycleLeft.started += instance.OnCycleLeft;
+                @CycleLeft.performed += instance.OnCycleLeft;
+                @CycleLeft.canceled += instance.OnCycleLeft;
+                @CycleRight.started += instance.OnCycleRight;
+                @CycleRight.performed += instance.OnCycleRight;
+                @CycleRight.canceled += instance.OnCycleRight;
+            }
+        }
+    }
+    public UIActions @UI => new UIActions(this);
     private int m_GamepadSchemeIndex = -1;
     public InputControlScheme GamepadScheme
     {
@@ -367,5 +480,10 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnUseWeapon(InputAction.CallbackContext context);
         void OnUseAbility(InputAction.CallbackContext context);
         void OnUseItem(InputAction.CallbackContext context);
+    }
+    public interface IUIActions
+    {
+        void OnCycleLeft(InputAction.CallbackContext context);
+        void OnCycleRight(InputAction.CallbackContext context);
     }
 }

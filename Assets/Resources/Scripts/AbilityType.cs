@@ -23,5 +23,7 @@ public class AbilityType
         this.actionStart = actionStart;
         this.actionUpdate = actionUpdate;
         this.actionEnd = actionEnd;
+
+        AbilityTypes.allAbilityTypes.Add(this);
     }
 }

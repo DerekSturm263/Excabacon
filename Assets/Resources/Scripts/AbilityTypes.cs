@@ -2,6 +2,8 @@ public static class AbilityTypes
 {
     private static UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/ability_icons");
 
+    public static System.Collections.Generic.List<AbilityType> allAbilityTypes = new System.Collections.Generic.List<AbilityType>();
+
     public static AbilityType DirtDash = new AbilityType(name: "Dirt Dash", icon: iconSpriteSheet[0], damage: 8, rechargeTime: 0, manaUse: 0, new System.Action<PlayerController>((player) =>
     {
         player.Dash(27.5f);
@@ -17,8 +19,23 @@ public static class AbilityTypes
         
     }));
 
-    public static AbilityType SuperShot = new AbilityType("Super Shot", iconSpriteSheet[3], 4, 6, 0, new System.Action<PlayerController>((player) =>
+    public static AbilityType SuperShot = new AbilityType("Super Shot", iconSpriteSheet[3], 4, 6, 0,
+        new System.Action<PlayerController>((player) =>
+        {
+            player.BowStart(3, 2f, 1f);
+        }),
+        new System.Action<PlayerController>((player) =>
+        {
+            player.BowUpdate();
+        }),
+        new System.Action<PlayerController>((player) =>
+        {
+            player.BowEnd();
+        })
+    );
+
+    public static AbilityType AbilityFromInt(int key)
     {
-        player.BowEnd();
-    }));
+        return allAbilityTypes[key];
+    }
 }
