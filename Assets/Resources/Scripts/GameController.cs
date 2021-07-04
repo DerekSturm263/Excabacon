@@ -22,7 +22,7 @@ public class GameController : MonoBehaviour
         spawnPoints = GameObject.FindGameObjectsWithTag("Spawn Point");
         TerrainInterface = Terrain.GetComponent<ModifyTerrain>();
         timeRemaining = gameSettings.matchTime;
-        //TileTerrainTestScript.Settiles(gameSettings.stage.tiles);
+        Terrain.GetComponent<TileTerrainTestScript>().Settiles(gameSettings.stage.tiles);
 
         for (int i = 0; i < 4; ++i)
         {
