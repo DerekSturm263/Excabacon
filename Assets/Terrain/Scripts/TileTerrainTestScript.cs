@@ -53,10 +53,10 @@ public class TileTerrainTestScript : MonoBehaviour
     }
     //loops through all tiles after box is created to subtract holes for caves
     
-    public static void Settiles(TileBase tile_asset)
+    public void Settiles(TileBase tile_asset)
     {
         //selfr.Tiles.TileToPlace = tile_asset;
-        SelfRefference.Tiles.TileToPlace = tile_asset;
+        Tiles.TileToPlace = tile_asset;
     }
 
     public void SetTileNonStatic(TileBase Set_){

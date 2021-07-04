@@ -11,7 +11,8 @@ public class MeshGenerator : MonoBehaviour
     public Vector2Int DebugTextureSize = new Vector2Int(256,256);
     public Renderer texturerender;
     
-    private void OnValidate() {
+    private void OnValidate() 
+    {
         CalculateDebugTexture();
     }
     void Start()
@@ -30,6 +31,7 @@ public class MeshGenerator : MonoBehaviour
                 colorMap[y * DebugTextureSize.x + x ] = Color.Lerp(Color.black,Color.white,tm_stack.CalculateAll(new Vector2(x,y)));
             }
         }
+        
 
     texture.SetPixels (colorMap);
     texture.Apply();

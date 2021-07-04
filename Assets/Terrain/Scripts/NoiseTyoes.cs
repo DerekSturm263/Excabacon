@@ -30,3 +30,28 @@ public class RandomNoise : ModifierNodeBase
         return randomnoise;
     }
 }
+
+public class NoiseFunctions : ModifierNodeBase
+{
+    public static float randomNoise(){
+        float randomnoise = 1;
+        randomnoise = Random.value;
+        return randomnoise;
+    }
+    
+    public static float Perlin_Noise(Vector2 position, Vector2 PerlinScale,float Scalemod,float Seed){
+        float perlin = 0;
+
+        float noise_x = position.x / PerlinScale.x *Scalemod +Seed ;
+        float noise_y = position.y /PerlinScale.y *Scalemod +Seed;
+        
+        
+        perlin = Mathf.PerlinNoise(noise_x,noise_y); 
+        
+        return perlin;
+    }
+
+
+    
+
+}

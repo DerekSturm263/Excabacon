@@ -344,12 +344,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1753901153}
-  - component: {fileID: 1753901155}
   - component: {fileID: 1753901154}
+  - component: {fileID: 1753901155}
   m_Layer: 0
   m_Name: wew
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -361,7 +361,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1753901152}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.775, y: -0.47, z: 0}
+  m_LocalPosition: {x: 0.067, y: -0.95, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -397,28 +397,24 @@ MonoBehaviour:
   modifiers:
   - ShowSettingsDropdown: 1
     modifier: 1
+    NodeName: ay yuh
     opacity: 1
     Position: {x: 0, y: 0}
-    perlinscale_Mod: 50
-    perlin_Seed: 5
-    perlin_Scale: {x: 256, y: 256}
-  - ShowSettingsDropdown: 1
-    modifier: 1
-    opacity: 0.709
-    Position: {x: 0, y: 0}
-    perlinscale_Mod: 100
+    perlinscale_Mod: 25
     perlin_Seed: 256
-    perlin_Scale: {x: 256, y: 256}
+    perlin_Scale: {x: 256, y: 150}
   - ShowSettingsDropdown: 1
     modifier: 1
-    opacity: 1
+    NodeName: modifier
+    opacity: 0.695
     Position: {x: 0, y: 0}
-    perlinscale_Mod: 10
+    perlinscale_Mod: 75
     perlin_Seed: 256
     perlin_Scale: {x: 256, y: 256}
   - ShowSettingsDropdown: 1
     modifier: 2
-    opacity: 0.622
+    NodeName: perjald
+    opacity: 0.366
     Position: {x: 0, y: 0}
     perlinscale_Mod: 0
     perlin_Seed: 0
