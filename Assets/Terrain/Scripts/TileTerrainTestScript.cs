@@ -19,11 +19,13 @@ public class TileTerrainTestScript : MonoBehaviour
     public bool GenerateOnGameStart = true;
     
     public TerrainModifierStack modstack;
+
+    static TileTerrainTestScript SelfRefference;
     void Start()
     {    
         if(GenerateOnGameStart)
             BuildTerrain();
-        
+        SelfRefference = GetComponent<TileTerrainTestScript>();
     }
     public void BuildTerrain()
     {
@@ -50,6 +52,18 @@ public class TileTerrainTestScript : MonoBehaviour
         //terrain.BoxFill(Vector3Int.RoundToInt(transform.position),Tiles.TileToPlace,Tiles.MinTileBounds.x, Tiles.MinTileBounds.y,Tiles.MaxTileBounds.x,Tiles.MaxTileBounds.y);
     }
     //loops through all tiles after box is created to subtract holes for caves
+    
+    public static void Settiles(TileBase tile_asset)
+    {
+        //selfr.Tiles.TileToPlace = tile_asset;
+        SelfRefference.Tiles.TileToPlace = tile_asset;
+    }
+
+    public void SetTileNonStatic(TileBase Set_){
+
+        
+    }
+    
     private void TileLoop()
     {
         float count_X = 0;

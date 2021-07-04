@@ -18,17 +18,17 @@ public class TerrainModifier
     
     
     
-    public bool ShowSettingsDropdown;        
+    public bool ShowSettingsDropdown = true;        
     public modtype modifier;
     
     //global parameters
-    public float opacity;
+    public float opacity = 1;
     public Vector2 Position; 
     //perlin noise paramters
-    public float perlinscale_Mod = 0; 
+    public float perlinscale_Mod = 50; 
 
-    public float perlin_Seed;
-    public Vector2 perlin_Scale;
+    public float perlin_Seed = 256;
+    public Vector2 perlin_Scale = new Vector2(256,256);
      
     
     public void NodeDisplayUpdate()

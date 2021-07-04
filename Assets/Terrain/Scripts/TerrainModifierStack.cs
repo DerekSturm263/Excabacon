@@ -5,6 +5,7 @@ using UnityEditor;
 [ExecuteAlways]
 public class TerrainModifierStack : MonoBehaviour
 {
+    [HideInInspector]
     public List<TerrainModifier> modifiers;
     void Start()
     {
@@ -19,14 +20,16 @@ public class TerrainModifierStack : MonoBehaviour
     public float CalculateAll(Vector2 position)
     {
         float fullyCalculated = 0;
+        float AccumulatedOpacity =0;
 
         for(int i = 0; i < modifiers.Count; i ++)
         {
-            fullyCalculated = fullyCalculated + modifiers[i].calculate(position) * modifiers[i].opacity; 
+            fullyCalculated = fullyCalculated + (modifiers[i].calculate(position) * modifiers[i].opacity); 
+            AccumulatedOpacity += modifiers[i].opacity;
             
         }
         //needs to have intensity calculated using combined opacities and modifier count factored in
-
+        fullyCalculated/= AccumulatedOpacity;
         return fullyCalculated;
     }
     
@@ -35,7 +38,7 @@ public class TerrainModifierStack : MonoBehaviour
 [CustomEditor(typeof(TerrainModifierStack))]
 public class ModifierStackEditor : Editor
 {
-    bool show = false;
+    bool show = true;
     
     
     public override void OnInspectorGUI()
@@ -47,45 +50,106 @@ public class ModifierStackEditor : Editor
         TerrainModifierStack Modscript = (TerrainModifierStack)target;
         
         show = EditorGUILayout.BeginFoldoutHeaderGroup(show,"Modifiers");
-            
+            // dropdown for modifiers ui
             if(show)
             {
                 
-                int i = 0;
-                foreach(TerrainModifier mod in  Modscript.modifiers)
+                for(int i = 0; i < Modscript.modifiers.Count;i++)
                 {
                     
-                    i++;
                     
-                    mod.ShowSettingsDropdown = EditorGUILayout.Foldout(mod.ShowSettingsDropdown,"Modifier " + ( i));
+                    
                         
-                        if(mod.ShowSettingsDropdown)
+                        
+                        EditorGUILayout.BeginHorizontal();
+                            
+                        Modscript.modifiers[i].ShowSettingsDropdown = EditorGUILayout.Foldout(Modscript.modifiers[i].ShowSettingsDropdown,"Modifier " + ( i + 1) + " ("  + Modscript.modifiers[i].modifier + ")");   
+                           
+                        EditorGUILayout.Space();
+                        EditorGUILayout.Space();
+                        EditorGUILayout.Space();
+
+                        if(GUILayout.Button("Up"))
+                            {
+                                int index_checked = Mathf.Clamp(i,0,Modscript.modifiers.Count);
+                                
+                                TerrainModifier targetmodifier = Modscript.modifiers[i -1];
+                                TerrainModifier swaptargetmodifier =Modscript.modifiers[i];
+                                Modscript.modifiers[i -1] = swaptargetmodifier;
+                                Modscript.modifiers[i] = targetmodifier;
+
+                            }
+                            if(GUILayout.Button("Down"))
+                            {
+                                int index_checked = Mathf.Clamp(i,0,Modscript.modifiers.Count);
+                                
+                                TerrainModifier targetmodifier = Modscript.modifiers[i + 1];
+                                TerrainModifier swaptargetmodifier =Modscript.modifiers[i];
+                                Modscript.modifiers[i + 1] = swaptargetmodifier;
+                                Modscript.modifiers[i] = targetmodifier;
+                            }
+                            if(GUILayout.Button("Remove"))
+                            {
+                                Modscript.modifiers.Remove(Modscript.modifiers[i]);
+                            }
+                            
+                        EditorGUILayout.EndHorizontal();
+                           
+                            
+
+                        
+                        if(Modscript.modifiers[i].ShowSettingsDropdown)
                         {
                             
+                           
+                            EditorGUILayout.Space();
+                            EditorGUILayout.Space();
+                            EditorGUILayout.Space();
+                            EditorGUILayout.Space();
+                            
+                            EditorGUILayout.Separator();
+                            
+                            
                             EditorGUILayout.BeginHorizontal();
+                            
                             EditorGUILayout.LabelField("Type");
-                            mod.modifier = (modtype)EditorGUILayout.EnumPopup(mod.modifier);  
+                            Modscript.modifiers[i].modifier = (modtype)EditorGUILayout.EnumPopup(Modscript.modifiers[i].modifier);  
                             EditorGUILayout.EndHorizontal();
                             
                             
                             
                             EditorGUILayout.BeginHorizontal();
                             EditorGUILayout.LabelField("Opacity");
-                            mod.opacity = EditorGUILayout.Slider(mod.opacity,0,1);
+                            Modscript.modifiers[i].opacity = EditorGUILayout.Slider(Modscript.modifiers[i].opacity,0,1);
+                            
+                            
                             EditorGUILayout.EndHorizontal();
                             
-                            mod.NodeDisplayUpdate();
+                            Modscript.modifiers[i].NodeDisplayUpdate();
+                            
+                            EditorGUILayout.Separator();
+                            
                             
                             
                         }
 
+                          
+
                     EditorGUILayout.EndFoldoutHeaderGroup();
+                    EditorGUILayout.Separator();  
                 }
-                        
+                    EditorGUILayout.Separator();    
                  
 
             }
         EditorGUILayout.EndFoldoutHeaderGroup();
+        EditorGUILayout.Separator();
+        EditorGUILayout.Separator();
+        EditorGUILayout.Separator();
+        if(GUILayout.Button("Add Modifier"))
+        {
+            Modscript.modifiers.Add(new TerrainModifier());
+        }
 
     
     }
@@ -94,6 +158,6 @@ public class ModifierStackEditor : Editor
     {
         Repaint();    
     }
-
+    
 }
 }
