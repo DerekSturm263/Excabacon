@@ -383,6 +383,14 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Select Player"",
+                    ""type"": ""Button"",
+                    ""id"": ""9e364948-2853-4760-bd93-0b3db33a9cdd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -410,6 +418,28 @@ public class @Controls : IInputActionCollection, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""4b99a3d4-ddfc-4775-a46e-4d1b32366e68"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse + Keyboard"",
+                    ""action"": ""Cycle Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e3e10da0-6d1a-4e0f-990a-65ac6d164cff"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse + Keyboard"",
+                    ""action"": ""Cycle Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""dc12aa54-19cc-4755-a138-2eee69a42fdf"",
                     ""path"": ""<Gamepad>/dpad/right"",
                     ""interactions"": """",
@@ -427,6 +457,61 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""Cycle Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9ae24c59-c979-4c05-971f-7dfeb004ae72"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse + Keyboard"",
+                    ""action"": ""Cycle Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c69b9ab8-6f0c-4381-813b-2e6b4a847bee"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse + Keyboard"",
+                    ""action"": ""Cycle Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b5e231eb-fc85-46f5-b0bb-65b921b89c4a"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Select Player"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e51a46a9-266c-4430-a789-325806df464a"",
+                    ""path"": """",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Select Player"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b3da7dce-083b-436e-8763-3890eab82cdf"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse + Keyboard"",
+                    ""action"": ""Select Player"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -476,6 +561,7 @@ public class @Controls : IInputActionCollection, IDisposable
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_CycleLeft = m_UI.FindAction("Cycle Left", throwIfNotFound: true);
         m_UI_CycleRight = m_UI.FindAction("Cycle Right", throwIfNotFound: true);
+        m_UI_SelectPlayer = m_UI.FindAction("Select Player", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -608,12 +694,14 @@ public class @Controls : IInputActionCollection, IDisposable
     private IUIActions m_UIActionsCallbackInterface;
     private readonly InputAction m_UI_CycleLeft;
     private readonly InputAction m_UI_CycleRight;
+    private readonly InputAction m_UI_SelectPlayer;
     public struct UIActions
     {
         private @Controls m_Wrapper;
         public UIActions(@Controls wrapper) { m_Wrapper = wrapper; }
         public InputAction @CycleLeft => m_Wrapper.m_UI_CycleLeft;
         public InputAction @CycleRight => m_Wrapper.m_UI_CycleRight;
+        public InputAction @SelectPlayer => m_Wrapper.m_UI_SelectPlayer;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -629,6 +717,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @CycleRight.started -= m_Wrapper.m_UIActionsCallbackInterface.OnCycleRight;
                 @CycleRight.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnCycleRight;
                 @CycleRight.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnCycleRight;
+                @SelectPlayer.started -= m_Wrapper.m_UIActionsCallbackInterface.OnSelectPlayer;
+                @SelectPlayer.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnSelectPlayer;
+                @SelectPlayer.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnSelectPlayer;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
@@ -639,6 +730,9 @@ public class @Controls : IInputActionCollection, IDisposable
                 @CycleRight.started += instance.OnCycleRight;
                 @CycleRight.performed += instance.OnCycleRight;
                 @CycleRight.canceled += instance.OnCycleRight;
+                @SelectPlayer.started += instance.OnSelectPlayer;
+                @SelectPlayer.performed += instance.OnSelectPlayer;
+                @SelectPlayer.canceled += instance.OnSelectPlayer;
             }
         }
     }
@@ -675,5 +769,6 @@ public class @Controls : IInputActionCollection, IDisposable
     {
         void OnCycleLeft(InputAction.CallbackContext context);
         void OnCycleRight(InputAction.CallbackContext context);
+        void OnSelectPlayer(InputAction.CallbackContext context);
     }
 }

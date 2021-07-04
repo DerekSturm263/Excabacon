@@ -16,7 +16,7 @@ public class GameSetupUIController : MonoBehaviour
     public GameObject players;
     public GameObject stages;
 
-    public GameObject[] playerButtons;
+    public UnityEngine.UI.Button[] playerButtons;
 
     public TMPro.TMP_Text instructionLabel;
 
@@ -25,8 +25,7 @@ public class GameSetupUIController : MonoBehaviour
     public UnityEngine.UI.Image[] weaponIcons = new UnityEngine.UI.Image[4];
     public UnityEngine.UI.Image[] abilityIcons = new UnityEngine.UI.Image[4];
 
-    public System.Collections.Generic.List<Player> inputPlayers = new System.Collections.Generic.List<Player>();
-    public bool[] isPlayerReady = new bool[4];
+    public static System.Collections.Generic.List<Player> inputPlayers = new System.Collections.Generic.List<Player>();
 
     private void Awake()
     {
@@ -38,6 +37,8 @@ public class GameSetupUIController : MonoBehaviour
 
         controls.UI.CycleLeft.started += ctx => SwitchPlayer(Player.PlayerFromDevice(ctx.control.device), -1);
         controls.UI.CycleRight.started += ctx => SwitchPlayer(Player.PlayerFromDevice(ctx.control.device), 1);
+
+        controls.UI.SelectPlayer.performed += ctx => SelectPlayer(Player.PlayerFromDevice(ctx.control.device));
 
         // Default values.
         GameController.gameSettings = new GameSettings();
@@ -62,16 +63,25 @@ public class GameSetupUIController : MonoBehaviour
         switch (change)
         {
             case InputDeviceChange.Added:
+                Player newPlayer = new Player(device, new InputUser());
+                inputPlayers.Add(newPlayer);
+                playerButtons[newPlayer.playerNum].gameObject.SetActive(true);
+
+                break;
+
+            case InputDeviceChange.Disconnected:
+
+                break;
+
             case InputDeviceChange.Reconnected:
-                inputPlayers.Add(new Player(device, new InputUser()));
-                playerButtons[Player.PlayerFromDevice(device).playerNum].SetActive(true);
+
                 break;
 
             case InputDeviceChange.Removed:
-            case InputDeviceChange.Disconnected:
-                playerButtons[Player.PlayerFromDevice(device).playerNum].SetActive(false);
+                playerButtons[Player.PlayerFromDevice(device).playerNum].gameObject.SetActive(false);
                 inputPlayers[Player.PlayerFromDevice(device).playerNum] = null;
                 inputPlayers.Remove(Player.PlayerFromDevice(device));
+
                 break;
         }
     }
@@ -89,10 +99,11 @@ public class GameSetupUIController : MonoBehaviour
 
     public void SwitchPlayer(Player player, int direction)
     {
-        if (!players.activeSelf)
+        if (!players.activeSelf || !playerButtons[player.playerNum].interactable)
             return;
 
         pigTypes[player.playerNum] += direction;
+
         if (pigTypes[player.playerNum] < 0)
         {
             pigTypes[player.playerNum] = PlayerTypes.Count - 1;
@@ -108,17 +119,22 @@ public class GameSetupUIController : MonoBehaviour
         abilityIcons[player.playerNum].sprite = AbilityTypes.AbilityFromInt(pigTypes[player.playerNum]).icon;
     }
 
-    public void SelectPlayer(int playerNum)
+    public void SelectPlayer(Player player)
     {
-        GameController.gameSettings.players[playerNum].player = PlayerTypes.PlayerFromInt(pigTypes[playerNum]);
-        GameController.gameSettings.players[playerNum].weapon = WeaponTypes.WeaponFromInt(pigTypes[playerNum]);
-        GameController.gameSettings.players[playerNum].ability = AbilityTypes.AbilityFromInt(pigTypes[playerNum]);
+        if (!players.activeSelf || !playerButtons[player.playerNum].interactable)
+            return;
 
-        isPlayerReady[playerNum] = true;
+        playerButtons[player.playerNum].interactable = false;
 
-        for (int i = 0; i < inputPlayers.Count; ++i)
+        GameController.gameSettings.players[player.playerNum].player = PlayerTypes.PlayerFromInt(pigTypes[player.playerNum]);
+        GameController.gameSettings.players[player.playerNum].weapon = WeaponTypes.WeaponFromInt(pigTypes[player.playerNum]);
+        GameController.gameSettings.players[player.playerNum].ability = AbilityTypes.AbilityFromInt(pigTypes[player.playerNum]);
+
+        inputPlayers[player.playerNum].isReady = true;
+
+        foreach (Player inputPlayer in inputPlayers)
         {
-            if (!isPlayerReady[i])
+            if (!inputPlayer.isReady)
                 return;
         }
 
@@ -132,7 +148,6 @@ public class GameSetupUIController : MonoBehaviour
     public void SelectStage(int stageNum)
     {
         GameController.gameSettings.stage = StageTypes.StageFromInt(stageNum);
-
         UnityEngine.SceneManagement.SceneManager.LoadScene("MovementTest");
     }
 

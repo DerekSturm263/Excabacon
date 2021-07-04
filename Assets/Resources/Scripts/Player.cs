@@ -4,6 +4,7 @@ using UnityEngine.InputSystem.Users;
 public class Player
 {
     public int playerNum;
+    public bool isReady;
 
     public InputDevice pairedDevice;
     public InputUser inputUser;
@@ -12,6 +13,8 @@ public class Player
 
     public Player(InputDevice pairedDevice, InputUser inputUser)
     {
+        this.playerNum = players.Count;
+
         this.pairedDevice = pairedDevice;
         this.inputUser = inputUser;
 

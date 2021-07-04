@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Animator))]
 public class PlayerController : MonoBehaviour
@@ -256,7 +255,7 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    public void Setup(PlayerType playerType, WeaponType weaponType, AbilityType abilityType, int playerNum, int teamNum)
+    public void Setup(Player player, PlayerType playerType, WeaponType weaponType, AbilityType abilityType, int playerNum, int teamNum)
     {
         playerClass = playerType;
         weaponClass = weaponType;
@@ -264,6 +263,14 @@ public class PlayerController : MonoBehaviour
 
         this.playerNum = playerNum;
         this.teamNum = teamNum;
+
+        InputControlScheme? scheme = InputControlScheme.FindControlSchemeForDevice(player.pairedDevice, controls.controlSchemes);
+        
+        if (scheme.HasValue)
+        {
+            Debug.Log(player.inputUser);
+            player.inputUser.ActivateControlScheme(scheme.Value);
+        }
 
         currentSpeed = playerClass.walkSpeed;
         alterableStats = new AlterableStats(playerClass.hp, playerClass.mana, GameController.gameSettings.stocks);

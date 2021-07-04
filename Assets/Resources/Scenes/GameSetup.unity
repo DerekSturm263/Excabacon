@@ -568,7 +568,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 59.35
+  m_fontSize: 59.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1178,9 +1178,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9811321, g: 0.69789964, b: 0.69789964, a: 1}
-    m_PressedColor: {r: 0.9433962, g: 0.5642577, b: 0.5642577, a: 1}
-    m_SelectedColor: {r: 0.9450981, g: 0.5647059, b: 0.5647059, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -1200,9 +1200,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1954175071}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GameSetupUIController, Assembly-CSharp
-        m_MethodName: SelectPlayer
+        m_MethodName: 
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3048,9 +3048,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9811321, g: 0.69789964, b: 0.69789964, a: 1}
-    m_PressedColor: {r: 0.9433962, g: 0.5642577, b: 0.5642577, a: 1}
-    m_SelectedColor: {r: 0.9450981, g: 0.5647059, b: 0.5647059, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -3070,9 +3070,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1954175071}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GameSetupUIController, Assembly-CSharp
-        m_MethodName: SelectPlayer
+        m_MethodName: 
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4182,7 +4182,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 59.35
+  m_fontSize: 59.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -4316,7 +4316,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 59.35
+  m_fontSize: 59.2
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5206,9 +5206,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9811321, g: 0.69789964, b: 0.69789964, a: 1}
-    m_PressedColor: {r: 0.9433962, g: 0.5642577, b: 0.5642577, a: 1}
-    m_SelectedColor: {r: 0.9450981, g: 0.5647059, b: 0.5647059, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -5228,9 +5228,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1954175071}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GameSetupUIController, Assembly-CSharp
-        m_MethodName: SelectPlayer
+        m_MethodName: 
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5560,7 +5560,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 64
+  m_fontSize: 63.85
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -5921,8 +5921,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 676.25, y: -390.34973}
-  m_SizeDelta: {x: 417.5, y: 780.69946}
+  m_AnchoredPosition: {x: 910, y: -389.6192}
+  m_SizeDelta: {x: 1820, y: 779.2384}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1515238411
 MonoBehaviour:
@@ -5946,9 +5946,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9811321, g: 0.69789964, b: 0.69789964, a: 1}
-    m_PressedColor: {r: 0.9433962, g: 0.5642577, b: 0.5642577, a: 1}
-    m_SelectedColor: {r: 0.9450981, g: 0.5647059, b: 0.5647059, a: 1}
+    m_HighlightedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_PressedColor: {r: 1, g: 1, b: 1, a: 1}
+    m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
     m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -5968,9 +5968,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1954175071}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: GameSetupUIController, Assembly-CSharp
-        m_MethodName: SelectPlayer
+        m_MethodName: 
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7844,10 +7844,10 @@ MonoBehaviour:
   players: {fileID: 441335589}
   stages: {fileID: 252005425}
   playerButtons:
-  - {fileID: 270745426}
-  - {fileID: 1515238409}
-  - {fileID: 1411667797}
-  - {fileID: 914273543}
+  - {fileID: 270745428}
+  - {fileID: 1515238411}
+  - {fileID: 1411667799}
+  - {fileID: 914273545}
   instructionLabel: {fileID: 1193907866}
   playerNames:
   - {fileID: 892512907}
@@ -7869,7 +7869,6 @@ MonoBehaviour:
   - {fileID: 1837353362}
   - {fileID: 823604038}
   - {fileID: 1196263337}
-  isPlayerReady: 00000000
 --- !u!1 &1977374422
 GameObject:
   m_ObjectHideFlags: 0

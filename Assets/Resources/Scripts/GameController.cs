@@ -1,6 +1,4 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Users;
 
 public class GameController : MonoBehaviour
 {
@@ -24,6 +22,7 @@ public class GameController : MonoBehaviour
         spawnPoints = GameObject.FindGameObjectsWithTag("Spawn Point");
         TerrainInterface = Terrain.GetComponent<ModifyTerrain>();
         timeRemaining = gameSettings.matchTime;
+        //TileTerrainTestScript.Settiles(gameSettings.stage.tiles);
 
         for (int i = 0; i < 4; ++i)
         {
@@ -33,7 +32,11 @@ public class GameController : MonoBehaviour
 
                 PlayerSettings playerSettings = gameSettings.players[i];
                 PlayerController newPlayer = Instantiate(player).GetComponent<PlayerController>();
-                newPlayer.Setup(playerSettings.player, playerSettings.weapon, playerSettings.ability, i, playerSettings.teamNum);
+                newPlayer.Setup(GameSetupUIController.inputPlayers[i], playerSettings.player, playerSettings.weapon, playerSettings.ability, i, playerSettings.teamNum);
+            }
+            else
+            {
+                huds[i].SetActive(false);
             }
         }
     }
