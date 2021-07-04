@@ -7,15 +7,6 @@ public class TerrainModifierStack : MonoBehaviour
 {
     [HideInInspector]
     public List<TerrainModifier> modifiers;
-    void Start()
-    {
-    
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
     
     public float CalculateAll(Vector2 position)
     {
@@ -54,21 +45,21 @@ public class ModifierStackEditor : Editor
             if(show)
             {
                 
-                for(int i = 0; i < Modscript.modifiers.Count;i++)
+                        bool candelete = false;
+                for(int i = 0; i < Modscript.modifiers.Count; ++i)
                 {
                     
-                    
-                    
-                        
-                        
+
                         EditorGUILayout.BeginHorizontal();
                             
-                        Modscript.modifiers[i].ShowSettingsDropdown = EditorGUILayout.Foldout(Modscript.modifiers[i].ShowSettingsDropdown,"Modifier " + ( i + 1) + " ("  + Modscript.modifiers[i].modifier + ")");   
-                           
+                        Modscript.modifiers[i].ShowSettingsDropdown = EditorGUILayout.Foldout(Modscript.modifiers[i].ShowSettingsDropdown,"Modifier " + ( i + 1));   
                         EditorGUILayout.Space();
+                        EditorGUILayout.Separator();
+                        Modscript.modifiers[i].NodeName = EditorGUILayout.TextField(Modscript.modifiers[i].NodeName);
+                        /*
                         EditorGUILayout.Space();
-                        EditorGUILayout.Space();
-
+                        */
+                        
                         if(GUILayout.Button("Up"))
                             {
                                 int index_checked = Mathf.Clamp(i,0,Modscript.modifiers.Count);
@@ -90,7 +81,7 @@ public class ModifierStackEditor : Editor
                             }
                             if(GUILayout.Button("Remove"))
                             {
-                                Modscript.modifiers.Remove(Modscript.modifiers[i]);
+                                candelete = true;
                             }
                             
                         EditorGUILayout.EndHorizontal();
@@ -133,10 +124,15 @@ public class ModifierStackEditor : Editor
                             
                         }
 
-                          
+                          if (candelete){
+                            Modscript.modifiers.Remove(Modscript.modifiers[i]);
+                            candelete = false;
+                          }
 
                     EditorGUILayout.EndFoldoutHeaderGroup();
                     EditorGUILayout.Separator();  
+
+                   
                 }
                     EditorGUILayout.Separator();    
                  

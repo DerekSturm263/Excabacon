@@ -15,11 +15,12 @@ public enum modtype
 public class TerrainModifier
 {
     //class instance/refferences
-    
-    
-    
     public bool ShowSettingsDropdown = true;        
     public modtype modifier;
+    
+    //purely visual parameters
+    public string NodeName = "New Modifier";
+
     
     //global parameters
     public float opacity = 1;
@@ -44,7 +45,7 @@ public class TerrainModifier
             break;
 
             case modtype.Random_Noise:
-                RandomNoiseModifier();  
+                RandomNoiseModifier();
             break;
         }
         
@@ -99,23 +100,6 @@ public class TerrainModifier
         float randomnoise = Random.value;
         return randomnoise;
     }
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
-     
      
      
      public void DisplayStringProperty(ref string property,string name)
