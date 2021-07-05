@@ -372,9 +372,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Select Player",
+                    "name": "Select/Join",
                     "type": "Button",
                     "id": "9e364948-2853-4760-bd93-0b3db33a9cdd",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Deselect/Leave",
+                    "type": "Button",
+                    "id": "ad4a04b5-dbb6-4db8-ae3f-b7230741564b",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -476,18 +484,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "Select Player",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "e51a46a9-266c-4430-a789-325806df464a",
-                    "path": "",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Gamepad",
-                    "action": "Select Player",
+                    "action": "Select/Join",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -498,7 +495,29 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Mouse + Keyboard",
-                    "action": "Select Player",
+                    "action": "Select/Join",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "15af2bb2-9400-426d-9b51-68e074b833ac",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Deselect/Leave",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "291b88a2-6bce-41d7-877e-142584ec89c4",
+                    "path": "<Keyboard>/backspace",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Mouse + Keyboard",
+                    "action": "Deselect/Leave",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

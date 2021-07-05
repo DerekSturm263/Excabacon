@@ -3,7 +3,6 @@ using UnityEngine;
 public class GameController : MonoBehaviour
 {
     public static GameSettings gameSettings;
-
     public static GameObject[] spawnPoints;
 
     public GameObject player;
@@ -22,7 +21,6 @@ public class GameController : MonoBehaviour
         spawnPoints = GameObject.FindGameObjectsWithTag("Spawn Point");
         TerrainInterface = Terrain.GetComponent<ModifyTerrain>();
         timeRemaining = gameSettings.matchTime;
-        Terrain.GetComponent<TileTerrainTestScript>().Settiles(gameSettings.stage.tiles);
 
         for (int i = 0; i < 4; ++i)
         {
@@ -30,9 +28,11 @@ public class GameController : MonoBehaviour
             {
                 huds[i].SetActive(true);
 
-                PlayerSettings playerSettings = gameSettings.players[i];
+                PigSettings playerSettings = gameSettings.players[i];
                 PlayerController newPlayer = Instantiate(player).GetComponent<PlayerController>();
-                newPlayer.Setup(GameSetupUIController.inputPlayers[i], playerSettings.player, playerSettings.weapon, playerSettings.ability, i, playerSettings.teamNum);
+                newPlayer.Setup(Player.GetPlayerFromIndex(i), playerSettings.player, playerSettings.weapon, playerSettings.ability, i, playerSettings.teamNum);
+
+                CameraController.targets.Add(newPlayer.transform);
             }
             else
             {

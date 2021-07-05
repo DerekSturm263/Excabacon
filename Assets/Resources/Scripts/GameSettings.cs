@@ -6,7 +6,7 @@
     }
     public GameMode gameMode;
 
-    public PlayerSettings[] players;
+    public PigSettings[] players;
     public ItemSettings itemSettings;
     public StageType stage;
 

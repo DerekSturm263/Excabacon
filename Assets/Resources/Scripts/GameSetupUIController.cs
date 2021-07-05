@@ -1,12 +1,10 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Users;
 
 public class GameSetupUIController : MonoBehaviour
 {
     private Controls controls;
-
     private EventSystem eventSystem;
 
     public byte items = 0b_0000_0000;
@@ -25,63 +23,46 @@ public class GameSetupUIController : MonoBehaviour
     public UnityEngine.UI.Image[] weaponIcons = new UnityEngine.UI.Image[4];
     public UnityEngine.UI.Image[] abilityIcons = new UnityEngine.UI.Image[4];
 
-    public static System.Collections.Generic.List<Player> inputPlayers = new System.Collections.Generic.List<Player>();
+    public static GameSetupUIController current;
 
     private void Awake()
     {
         controls = new Controls();
+        Player.onPlayerChange += OpenOrCloseSpot;
+        current = this;
+
         eventSystem = EventSystem.current;
 
         players.SetActive(false);
         stages.SetActive(false);
 
-        controls.UI.CycleLeft.started += ctx => SwitchPlayer(Player.PlayerFromDevice(ctx.control.device), -1);
-        controls.UI.CycleRight.started += ctx => SwitchPlayer(Player.PlayerFromDevice(ctx.control.device), 1);
+        controls.UI.CycleLeft.started += ctx => SwitchPlayer(ctx.control.device, -1);
+        controls.UI.CycleRight.started += ctx => SwitchPlayer(ctx.control.device, 1);
 
-        controls.UI.SelectPlayer.performed += ctx => SelectPlayer(Player.PlayerFromDevice(ctx.control.device));
+        controls.UI.SelectJoin.performed += ctx => JoinOrSelectPlayer(ctx.control.device);
+        controls.UI.DeselectLeave.performed += ctx => LeaveOrDeselectPlayer(ctx.control.device);
 
         // Default values.
         GameController.gameSettings = new GameSettings();
-        GameController.gameSettings.players = new PlayerSettings[4];
+
+        GameController.gameSettings.players = new PigSettings[4];
         GameController.gameSettings.stocks = 5;
         GameController.gameSettings.matchTime = 180f;
         GameController.gameSettings.itemSettings.itemSpawnRate = 2;
         GameController.gameSettings.itemSettings.items = ItemTypes.allItemTypes;
-
-        foreach (InputDevice device in InputSystem.devices)
-        {
-            ChangeDevice(device, InputDeviceChange.Added);
-        }
-
-        InputSystem.onDeviceChange += (device, change) => ChangeDevice(device, change);
     }
 
-    public void ChangeDevice(InputDevice device, InputDeviceChange change)
+    public void OpenOrCloseSpot(Player player, Player.PlayerChange change)
     {
-        Debug.Log(device.displayName + " was " + change.ToString());
-
         switch (change)
         {
-            case InputDeviceChange.Added:
-                Player newPlayer = new Player(device, new InputUser());
-                inputPlayers.Add(newPlayer);
-                playerButtons[newPlayer.playerNum].gameObject.SetActive(true);
-
+            case Player.PlayerChange.Player_Added:
+                playerButtons[player.playerNum].transform.GetChild(0).gameObject.SetActive(true);
+                playerButtons[player.playerNum].transform.GetChild(2).gameObject.SetActive(false);
                 break;
-
-            case InputDeviceChange.Disconnected:
-
-                break;
-
-            case InputDeviceChange.Reconnected:
-
-                break;
-
-            case InputDeviceChange.Removed:
-                playerButtons[Player.PlayerFromDevice(device).playerNum].gameObject.SetActive(false);
-                inputPlayers[Player.PlayerFromDevice(device).playerNum] = null;
-                inputPlayers.Remove(Player.PlayerFromDevice(device));
-
+            case Player.PlayerChange.Player_Removed:
+                playerButtons[player.playerNum].transform.GetChild(0).gameObject.SetActive(false);
+                playerButtons[player.playerNum].transform.GetChild(2).gameObject.SetActive(true);
                 break;
         }
     }
@@ -97,26 +78,64 @@ public class GameSetupUIController : MonoBehaviour
         eventSystem.SetSelectedGameObject(players.GetComponentsInChildren<UnityEngine.UI.Button>()[0].gameObject);
     }
 
-    public void SwitchPlayer(Player player, int direction)
+    public void SwitchPlayer(InputDevice device, int direction)
     {
-        if (!players.activeSelf || !playerButtons[player.playerNum].interactable)
+        if (!players.activeSelf || !Player.players.ContainsKey(device) || !playerButtons[Player.GetPlayerFromDevice(device).playerNum].interactable)
             return;
 
-        pigTypes[player.playerNum] += direction;
+        Player p = Player.GetPlayerFromDevice(device);
 
-        if (pigTypes[player.playerNum] < 0)
+        pigTypes[p.playerNum] += direction;
+
+        if (pigTypes[p.playerNum] < 0)
         {
-            pigTypes[player.playerNum] = PlayerTypes.Count - 1;
+            pigTypes[p.playerNum] = PigTypes.Count - 1;
         }
-        else if (pigTypes[player.playerNum] > PlayerTypes.Count - 1)
+        else if (pigTypes[p.playerNum] > PigTypes.Count - 1)
         {
-            pigTypes[player.playerNum] = 0;
+            pigTypes[p.playerNum] = 0;
         }
 
-        playerNames[player.playerNum].text = PlayerTypes.PlayerFromInt(pigTypes[player.playerNum]).name;
-        playerIcons[player.playerNum].sprite = PlayerTypes.PlayerFromInt(pigTypes[player.playerNum]).icon;
-        weaponIcons[player.playerNum].sprite = WeaponTypes.WeaponFromInt(pigTypes[player.playerNum]).icon;
-        abilityIcons[player.playerNum].sprite = AbilityTypes.AbilityFromInt(pigTypes[player.playerNum]).icon;
+        playerNames[p.playerNum].text = PigTypes.PigFromInt(pigTypes[p.playerNum]).name;
+        playerIcons[p.playerNum].sprite = PigTypes.PigFromInt(pigTypes[p.playerNum]).icon;
+        weaponIcons[p.playerNum].sprite = WeaponTypes.WeaponFromInt(pigTypes[p.playerNum]).icon;
+        abilityIcons[p.playerNum].sprite = AbilityTypes.AbilityFromInt(pigTypes[p.playerNum]).icon;
+    }
+
+    public void JoinOrSelectPlayer(InputDevice device)
+    {
+        if (!players.activeSelf)
+            return;
+
+        if (Player.players.ContainsKey(device))
+        {
+            SelectPlayer(Player.players[device]);
+        }
+        else
+        {
+            Player.AddPlayer(device);
+        }
+    }
+
+    public void LeaveOrDeselectPlayer(InputDevice device)
+    {
+        if (!players.activeSelf || !Player.players.ContainsKey(device))
+            return;
+
+        Player p = Player.GetPlayerFromDevice(device);
+
+        if (p.isReady)
+        {
+            p.isReady = false;
+            playerButtons[p.playerNum].interactable = true;
+
+            playerButtons[p.playerNum].transform.GetChild(0).gameObject.SetActive(true);
+            playerButtons[p.playerNum].transform.GetChild(1).gameObject.SetActive(false);
+        }
+        else
+        {
+            Player.RemovePlayer(device);
+        }
     }
 
     public void SelectPlayer(Player player)
@@ -126,15 +145,18 @@ public class GameSetupUIController : MonoBehaviour
 
         playerButtons[player.playerNum].interactable = false;
 
-        GameController.gameSettings.players[player.playerNum].player = PlayerTypes.PlayerFromInt(pigTypes[player.playerNum]);
+        GameController.gameSettings.players[player.playerNum].player = PigTypes.PigFromInt(pigTypes[player.playerNum]);
         GameController.gameSettings.players[player.playerNum].weapon = WeaponTypes.WeaponFromInt(pigTypes[player.playerNum]);
         GameController.gameSettings.players[player.playerNum].ability = AbilityTypes.AbilityFromInt(pigTypes[player.playerNum]);
 
-        inputPlayers[player.playerNum].isReady = true;
+        player.isReady = true;
 
-        foreach (Player inputPlayer in inputPlayers)
+        playerButtons[player.playerNum].transform.GetChild(0).gameObject.SetActive(false);
+        playerButtons[player.playerNum].transform.GetChild(1).gameObject.SetActive(true);
+
+        foreach (System.Collections.Generic.KeyValuePair<InputDevice, Player> playerVal in Player.players)
         {
-            if (!inputPlayer.isReady)
+            if (!playerVal.Value.isReady)
                 return;
         }
 
@@ -148,6 +170,7 @@ public class GameSetupUIController : MonoBehaviour
     public void SelectStage(int stageNum)
     {
         GameController.gameSettings.stage = StageTypes.StageFromInt(stageNum);
+
         UnityEngine.SceneManagement.SceneManager.LoadScene("MovementTest");
     }
 
@@ -171,6 +194,17 @@ public class GameSetupUIController : MonoBehaviour
     public void SelectTime(float newTimeLimit)
     {
         GameController.gameSettings.matchTime = newTimeLimit;
+    }
+
+    public static int FindOpenSpot()
+    {
+        for (int i = 0; i < 4; ++i)
+        {
+            if (current.playerButtons[i].transform.GetChild(2).gameObject.activeSelf)
+                return i;
+        }
+
+        return -1;
     }
 
     private void OnEnable()

@@ -4,28 +4,28 @@ public static class WeaponTypes
 
     public static System.Collections.Generic.List<WeaponType> allWeaponTypes = new System.Collections.Generic.List<WeaponType>();
 
-    public static WeaponType Drill = new WeaponType(name: "Drill", icon: iconSpriteSheet[0], damage: 4, knockback: 2, speed: 0, manaUse: 0,
+    public static WeaponType Drill = new WeaponType(name: "Drill", icon: iconSpriteSheet[0], damage: 4, knockback: 2, speed: 0, manaUse: 0, mineRadius: 2,
         null, new System.Action<PlayerController>((player) =>
         {
-            player.Mine(2);
+            player.Mine();
             player.weapon.CheckForImpact();
         })
     );
-    public static WeaponType Pickaxe = new WeaponType("Pickaxe", iconSpriteSheet[1], 8, 4, 2, 0, 
+    public static WeaponType Pickaxe = new WeaponType("Pickaxe", iconSpriteSheet[1], 8, 4, 2, 0, 4,
         new System.Action<PlayerController>((player) =>
         {
-            player.Mine(4);
+            player.Mine();
             player.weapon.CheckForImpact();
         })
     );
-    public static WeaponType Spell = new WeaponType("Spell", iconSpriteSheet[2], 10, 0, 6, 4,
+    public static WeaponType Spell = new WeaponType("Spell", iconSpriteSheet[2], 10, 0, 6, 4, 4,
         new System.Action<PlayerController>((player) =>
         {
             player.Spell();
         })
     );
 
-    public static WeaponType Bow = new WeaponType("Bow", iconSpriteSheet[3], 6, 2, 0, 0,
+    public static WeaponType Bow = new WeaponType("Bow", iconSpriteSheet[3], 6, 2, 0, 0, 2,
         new System.Action<PlayerController>((player) =>
         {
             player.BowStart(1, 3f, 0.5f);
