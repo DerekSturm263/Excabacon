@@ -23,11 +23,9 @@ public class Player
         this.isReady = false;
 
         this.pairedDevice = pairedDevice;
-        this.user = InputUser.CreateUserWithoutPairedDevices();
+        this.user = InputUser.PerformPairingWithDevice(this.pairedDevice);
 
-        InputUser.PerformPairingWithDevice(this.pairedDevice, user);
         players.Add(this.pairedDevice, this);
-
         UnityEngine.Debug.Log("Player " + playerNum + " has joined via " + pairedDevice.displayName);
     }
 

@@ -268,8 +268,9 @@ public class PlayerController : MonoBehaviour
         currentSpeed = playerClass.walkSpeed;
         alterableStats = new AlterableStats(playerClass.hp, playerClass.mana, GameController.gameSettings.stocks);
 
-        InputControlScheme? scheme = InputControlScheme.FindControlSchemeForDevice(player.pairedDevice, controls.controlSchemes);
+        player.user.AssociateActionsWithUser(controls);
 
+        InputControlScheme? scheme = InputControlScheme.FindControlSchemeForDevice(player.pairedDevice, controls.controlSchemes);
         if (scheme.HasValue)
         {
             player.user.ActivateControlScheme(scheme.Value);
