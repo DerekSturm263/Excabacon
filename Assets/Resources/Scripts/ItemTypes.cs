@@ -17,6 +17,11 @@ public static class ItemTypes
 
     public static ItemType ItemFromInt(int key)
     {
+        if (key == -1)
+        {
+            return allItemTypes[UnityEngine.Random.Range(0, allItemTypes.Count)];
+        }
+
         return allItemTypes[key];
     }
 }

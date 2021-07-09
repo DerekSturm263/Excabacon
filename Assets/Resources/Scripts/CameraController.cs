@@ -7,6 +7,8 @@ public class CameraController : MonoBehaviour
     public static List<Transform> targets = new List<Transform>();
     private Vector3 camPos;
 
+    public float speed = 2.5f;
+
     private void Update()
     {
         Vector3 totalPos = Vector3.zero;
@@ -43,6 +45,6 @@ public class CameraController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        transform.position = Vector3.Lerp(transform.position, camPos, Time.fixedDeltaTime);
+        transform.position = Vector3.Lerp(transform.position, camPos, Time.fixedDeltaTime * speed);
     }
 }

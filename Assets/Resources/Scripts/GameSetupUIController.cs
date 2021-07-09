@@ -145,9 +145,18 @@ public class GameSetupUIController : MonoBehaviour
 
         playerButtons[player.playerNum].interactable = false;
 
-        GameController.gameSettings.players[player.playerNum].player = PigTypes.PigFromInt(pigTypes[player.playerNum]);
-        GameController.gameSettings.players[player.playerNum].weapon = WeaponTypes.WeaponFromInt(pigTypes[player.playerNum]);
-        GameController.gameSettings.players[player.playerNum].ability = AbilityTypes.AbilityFromInt(pigTypes[player.playerNum]);
+        if (pigTypes[player.playerNum] == 0) // Random.
+        {
+            GameController.gameSettings.players[player.playerNum].player = PigTypes.PigFromInt(Random.Range(1, PigTypes.Count));
+            GameController.gameSettings.players[player.playerNum].weapon = WeaponTypes.WeaponFromInt(Random.Range(1, WeaponTypes.Count));
+            GameController.gameSettings.players[player.playerNum].ability = AbilityTypes.AbilityFromInt(Random.Range(1, AbilityTypes.Count));
+        }
+        else
+        {
+            GameController.gameSettings.players[player.playerNum].player = PigTypes.PigFromInt(pigTypes[player.playerNum]);
+            GameController.gameSettings.players[player.playerNum].weapon = WeaponTypes.WeaponFromInt(pigTypes[player.playerNum]);
+            GameController.gameSettings.players[player.playerNum].ability = AbilityTypes.AbilityFromInt(pigTypes[player.playerNum]);
+        }
 
         player.isReady = true;
 
@@ -164,6 +173,12 @@ public class GameSetupUIController : MonoBehaviour
         stages.SetActive(true);
 
         instructionLabel.text = "Choose The Stage";
+
+        Invoke("SelectStagesEventSystem", 0.05f);
+    }
+
+    private void SelectStagesEventSystem()
+    {
         eventSystem.SetSelectedGameObject(stages.GetComponentsInChildren<UnityEngine.UI.Button>()[0].gameObject);
     }
 

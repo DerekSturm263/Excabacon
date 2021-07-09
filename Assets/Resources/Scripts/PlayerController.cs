@@ -422,10 +422,13 @@ public class PlayerController : MonoBehaviour
         --alterableStats.stocks;
         stockCount.text = "x" + alterableStats.stocks;
 
-        Spawn();
+        if (alterableStats.stocks > 0)
+        {
+            Spawn();
 
-        UpdateHealth();
-        UpdateMana();
+            UpdateHealth();
+            UpdateMana();
+        }
     }
 
     private void UpdateHealth()

@@ -13,6 +13,11 @@ public static class StageTypes
 
     public static StageType StageFromInt(int key)
     {
+        if (key == -1)
+        {
+            return allStageTypes[UnityEngine.Random.Range(0, allStageTypes.Count)];
+        }
+
         return allStageTypes[key];
     }
 }
