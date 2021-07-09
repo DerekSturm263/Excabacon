@@ -28,9 +28,9 @@ public class GameController : MonoBehaviour
             {
                 huds[i].SetActive(true);
 
-                PigSettings playerSettings = gameSettings.players[i];
+                PigSettings pigSettings = gameSettings.players[i];
                 PlayerController newPlayer = Instantiate(player).GetComponent<PlayerController>();
-                newPlayer.Setup(Player.GetPlayerFromIndex(i), playerSettings.player, playerSettings.weapon, playerSettings.ability, i, playerSettings.teamNum);
+                newPlayer.Setup(Player.GetPlayerFromIndex(i), pigSettings.player, pigSettings.weapon, pigSettings.ability, i, pigSettings.teamNum);
 
                 CameraController.targets.Add(newPlayer.transform);
             }

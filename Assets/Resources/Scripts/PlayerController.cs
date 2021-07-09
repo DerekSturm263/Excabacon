@@ -318,11 +318,7 @@ public class PlayerController : MonoBehaviour
     public void Mine()
     {
         GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, weaponClass.mineRadius, out bool hasMined);
-
-        if (hasMined)
-        {
-            rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
-        }
+        rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
     }
 
     #region Weapons
@@ -419,13 +415,20 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        --alterableStats.stocks;
-        stockCount.text = "x" + alterableStats.stocks;
+        if (alterableStats.stocks > 0)
+        {
+            --alterableStats.stocks;
+            stockCount.text = "x" + alterableStats.stocks;
 
-        Spawn();
+            Spawn();
 
-        UpdateHealth();
-        UpdateMana();
+            UpdateHealth();
+            UpdateMana();
+        }
+        else
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     private void UpdateHealth()
