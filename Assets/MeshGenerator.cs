@@ -17,9 +17,34 @@ public class MeshGenerator : MonoBehaviour
     }
     void Start()
     {
-        CalculateDebugTexture();
+        //CalculateDebugTexture();
     }
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     public void CalculateDebugTexture()
     {
         Texture2D texture = new Texture2D(DebugTextureSize.x,DebugTextureSize.y);
@@ -28,6 +53,7 @@ public class MeshGenerator : MonoBehaviour
         
         for(int y =0; y <DebugTextureSize.y; y++){
             for(int x =0; x<DebugTextureSize.x;x++){
+                
                 colorMap[y * DebugTextureSize.x + x ] = Color.Lerp(Color.black,Color.white,tm_stack.CalculateAll(new Vector2(x,y)));
             }
         }
@@ -51,8 +77,7 @@ public class MeshGeneratorUI : Editor
         MeshGenerator mesh_Gen = (MeshGenerator)target;
 
         if(GUILayout.Button("Generate")){
-            mesh_Gen.CalculateDebugTexture();
+            //mesh_Gen.CalculateDebugTexture();
         }
     }
 }
-

@@ -1,0 +1,192 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!181963792 &2655988077585873504
+Preset:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: TestModifierStackPreset
+  m_TargetType:
+    m_NativeTypeID: 114
+    m_ManagedTypePPtr: {fileID: 11500000, guid: e0bead54dd23637418b70ef8f2dcfa34,
+      type: 3}
+    m_ManagedTypeFallback: 
+  m_Properties:
+  - target: {fileID: 0}
+    propertyPath: m_Enabled
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorHideFlags
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: m_EditorClassIdentifier
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.size
+    value: 4
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[0].ShowSettingsDropdown
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[0].modifier
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[0].NodeName
+    value: ay yuh
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[0].opacity
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[0].Position.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[0].Position.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[0].perlinscale_Mod
+    value: 25
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[0].perlin_Seed
+    value: 256
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[0].perlin_Scale.x
+    value: 1024
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[0].perlin_Scale.y
+    value: 256
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[1].ShowSettingsDropdown
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[1].modifier
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[1].NodeName
+    value: modifier
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[1].opacity
+    value: 0.581
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[1].Position.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[1].Position.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[1].perlinscale_Mod
+    value: 53
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[1].perlin_Seed
+    value: 256
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[1].perlin_Scale.x
+    value: 512
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[1].perlin_Scale.y
+    value: 512
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[2].ShowSettingsDropdown
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[2].modifier
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[2].NodeName
+    value: New Modifier
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[2].opacity
+    value: 0.366
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[2].Position.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[2].Position.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[2].perlinscale_Mod
+    value: 52
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[2].perlin_Seed
+    value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[2].perlin_Scale.x
+    value: 256
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[2].perlin_Scale.y
+    value: 256
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[3].ShowSettingsDropdown
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[3].modifier
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[3].NodeName
+    value: perjald
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[3].opacity
+    value: 0.162
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[3].Position.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[3].Position.y
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[3].perlinscale_Mod
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[3].perlin_Seed
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[3].perlin_Scale.x
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: modifiers.Array.data[3].perlin_Scale.y
+    value: 0
+    objectReference: {fileID: 0}
+  m_ExcludedProperties: []
