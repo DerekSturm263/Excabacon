@@ -9,33 +9,33 @@ public static class WeaponTypes
     }
 
     public static WeaponType Random = new WeaponType("Random", null, 0, 0, 0, 0, 0);
-    public static WeaponType Drill = new WeaponType(name: "Drill", icon: iconSpriteSheet[0], damage: 4, knockback: 2, speed: 0, manaUse: 0, mineRadius: 2,
+    public static WeaponType Drill = new WeaponType("Drill", iconSpriteSheet[0], damage: 2, knockback: 2, speed: 0, manaUse: 0, mineRadius: 2,
         null, new System.Action<PlayerController>((player) =>
         {
             player.Mine();
             player.weapon.CheckForImpact();
         })
     );
-    public static WeaponType Pickaxe = new WeaponType("Pickaxe", iconSpriteSheet[1], 8, 4, 2, 0, 4,
+    public static WeaponType Pickaxe = new WeaponType("Pickaxe", iconSpriteSheet[1], damage: 8, knockback: 6, speed: 2, manaUse: 0, mineRadius: 4,
         new System.Action<PlayerController>((player) =>
         {
             player.Mine();
             player.weapon.CheckForImpact();
         })
     );
-    public static WeaponType Spell = new WeaponType("Spell", iconSpriteSheet[2], 10, 0, 6, 4, 4,
+    public static WeaponType Spell = new WeaponType("Spell", iconSpriteSheet[2], damage: 6, knockback: 2, speed: 0, manaUse: 2, mineRadius: 2,
         new System.Action<PlayerController>((player) =>
         {
             player.Spell();
         })
     );
 
-    public static WeaponType Bow = new WeaponType("Bow", iconSpriteSheet[3], 6, 2, 0, 0, 2,
+    public static WeaponType Bow = new WeaponType("Bow", iconSpriteSheet[3], damage: 4, knockback: 2, speed: 0, manaUse: 0, mineRadius: 2,
         new System.Action<PlayerController>((player) =>
         {
             player.BowStart(1, 3f, 0.5f);
         }),
-            new System.Action<PlayerController>((player) =>
+        new System.Action<PlayerController>((player) =>
         {
             player.BowUpdate();
         }),
