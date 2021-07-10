@@ -46,8 +46,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tm_stack: {fileID: 0}
-  resolution: 0
-  voxelSize: 0
+  resolution: 3
+  voxelSize: 3
+  gridsize: 0
+  GenerationOffsetPosition: {x: 0, y: 0}
+  xNeighbor: {fileID: 0}
+  yNeighbor: {fileID: 0}
+  xyNeighbor: {fileID: 0}
 --- !u!33 &1123799845525493795
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -75,7 +80,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 15303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 7848ccc2aeb4acc4d8471e94b0d543c5, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-[SelectionBase]
+using UnityEngine.InputSystem;
+
 public class VoxelGrid : MonoBehaviour
 {
     public TerrainModifierStack tm_stack;
@@ -11,15 +12,19 @@ public class VoxelGrid : MonoBehaviour
     public int resolution;
     
     private voxel[] voxels;
-
-
     private Mesh mesh;
 
-    public float voxelSize;
+    public float voxelSize,gridsize;
 
     private List<Vector3> vertices;
 
     private List<int> triangles; 
+
+    public Vector2 GenerationOffsetPosition;
+
+    public VoxelGrid xNeighbor,yNeighbor,xyNeighbor;
+
+    private voxel dummyX,dummyY,dummyT;
 
    /*public void initialize()
    {
@@ -30,7 +35,6 @@ public class VoxelGrid : MonoBehaviour
    //private void Awake() {
        //initalize(resolution,1);
   // }
-    
     public void InitializeFromOther()
     {
         initalize(resolution,1);
@@ -39,14 +43,19 @@ public class VoxelGrid : MonoBehaviour
     public void initalize(int vresolution, float size)
     {
         this.resolution = vresolution;
+        gridsize = size;
         voxelSize = size/resolution;
         voxels = new voxel[resolution * resolution];
 
+
+        dummyX = new voxel();
+        dummyY = new voxel();
+        dummyT = new voxel();
         
 		for (int i = 0, y = 0; y < vresolution; y++) {
 			for (int x = 0; x < vresolution; x++, i++) {
 				CreateVoxel(i, x, y);
-                 if(tm_stack.CalculateAll(new Vector2(x,y)) > 0.5){
+                 if(tm_stack.CalculateAll(new Vector2(x + GenerationOffsetPosition.x,y + GenerationOffsetPosition.y)) > 0.5){
                     voxels[i].state = false;
                  }
                   
@@ -61,12 +70,21 @@ public class VoxelGrid : MonoBehaviour
         vertices = new List<Vector3>();
         triangles = new List<int>();
         
-        Refresh();
-        
+       
+       
+       //Refresh();
+        StartCoroutine(DelayedRefresh());
         
     }
     
-    private void CreateVoxel(int i,int x,int y){
+    // probably see if there is a way of doing this that does not require this treacherous peice of code lol
+    public IEnumerator DelayedRefresh()
+    {
+        yield return new WaitForSeconds(0.01f);
+        Refresh();
+    }
+    private void CreateVoxel(int i,int x,int y)
+    {
         voxels[i] = new voxel(x,y,voxelSize);
     }
     
@@ -81,8 +99,14 @@ public class VoxelGrid : MonoBehaviour
         triangles.Clear();
         mesh.Clear();
         
+        if(xNeighbor != null)
+        {
+            dummyX.BecomeXdummyOf(xNeighbor.voxels[0],gridsize);
+        }
         TriangulateCellRows();
-
+        if(yNeighbor != null){
+                TriangulateGapRow();
+            }
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
     }
@@ -96,11 +120,43 @@ public class VoxelGrid : MonoBehaviour
             {
                 TriangulateCell(voxels[i],voxels[i +1],voxels[i+ resolution],voxels[i + resolution + 1]);
             }
-
+            if(xNeighbor !=null)
+            {
+                TriangulateGapCell(i);
+            }
+            
         }
 
     }
+    private void TriangulateGapCell(int i)
+    {
+        voxel dummyswap = dummyT;
+        dummyswap.BecomeXdummyOf(xNeighbor.voxels[i +1],gridsize);
+        dummyT = dummyX;
+        dummyX = dummyswap;
+        TriangulateCell(voxels[i],dummyT,voxels[i +resolution],dummyX);
+    }
 
+    private void TriangulateGapRow()
+    {
+        dummyY.BecomeYdummyOf(yNeighbor.voxels[0],gridsize);
+        int cells = resolution -1;
+        int offset = cells * resolution;
+    
+        for(int x = 0; x <cells; x++)
+        {
+            voxel dummySwap = dummyT;
+            dummySwap.BecomeYdummyOf(yNeighbor.voxels[x+1],gridsize);
+            dummyT = dummyY;
+            dummyY = dummySwap;
+            TriangulateCell(voxels[x + offset],voxels[x + offset +1],dummyT,dummyY);
+        }
+        
+        if(xNeighbor !=null){
+            dummyT.BecomeXYDummyOF(xyNeighbor.voxels[0],gridsize);
+            TriangulateCell(voxels[voxels.Length - 1],dummyX ,dummyY ,dummyT);
+        }
+    }
     private void TriangulateCell(voxel a, voxel b, voxel c, voxel d)
     {
         int celltype = 0;
@@ -226,6 +282,10 @@ public class voxel
 {
     public bool state = true;
     public Vector2 position,xEdgePosition,yEdgePosition;
+    
+    public voxel (){}
+    
+    
     public voxel(int x, int y, float size)
     {
         position.x = (x + 0.5f) * size;
@@ -236,21 +296,40 @@ public class voxel
 		yEdgePosition = position;
 		yEdgePosition.y += size * 0.5f;
     }
-}
-[CustomEditor(typeof(VoxelGrid))]
 
-//swap out for voxel map when ready
-public class VoxelGenUI : Editor
-{
-    public override void OnInspectorGUI()
+    public void BecomeXdummyOf(voxel voxel, float offset)
     {
-        DrawDefaultInspector();
+        state = voxel.state;
+        position = voxel.position;
+        xEdgePosition = voxel.xEdgePosition;
+        yEdgePosition = voxel.yEdgePosition;
+        position.x +=offset;
+        xEdgePosition.x += offset;
+        yEdgePosition.x +=offset;
+    }
 
-        VoxelGrid mesh_Gen = (VoxelGrid)target;
+        public void BecomeYdummyOf(voxel voxel, float offset)
+    {
+        state = voxel.state;
+        position = voxel.position;
+        xEdgePosition = voxel.xEdgePosition;
+        yEdgePosition = voxel.yEdgePosition;
+        position.y +=offset;
+        xEdgePosition.y += offset;
+        yEdgePosition.y += offset;
+    }
 
-        if(GUILayout.Button("Generate")){
-            mesh_Gen.InitializeFromOther();
-
-        }
+    public void BecomeXYDummyOF(voxel voxel,float offset)
+    {
+        state = voxel.state;
+        position = voxel.position;
+        xEdgePosition = voxel.xEdgePosition;
+        yEdgePosition = voxel.yEdgePosition;
+        position.x += offset;
+        position.y += offset;
+        xEdgePosition.x +=offset;
+        xEdgePosition.y +=offset;
+        yEdgePosition.x +=offset;
+        yEdgePosition.y +=offset;
     }
 }
