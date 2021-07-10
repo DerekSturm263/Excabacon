@@ -32,16 +32,11 @@ public class VoxelMap : MonoBehaviour
         halfsize = size * 0.5f;
         chunksize = size/chunkResolution;
         voxelsize = chunksize / resolution;    
-
-        if(chunks.Length > 0){
-            for(int i = 0; i < chunks.Length; i++)
-            {
-                DestroyImmediate(chunks[i].gameObject,true);
-            }
-            chunks = new VoxelGrid[0];
-        }
         
         chunks = new VoxelGrid[chunkResolution * chunkResolution];
+        
+ 
+        
         for(int i = 0, y =0; y<chunkResolution; y++)
         {
             for (int x = 0; x<chunkResolution;x++, i++)
