@@ -3,15 +3,14 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
+    public ItemType item;
+
     private LayerMask ground = 1 << 6;
     private bool used;
     public GameObject carrier;
 
     [HideInInspector] public Rigidbody2D rb2D;
     [HideInInspector] public SpriteRenderer sprtRndr;
-
-    public Action<Item> useAction; // Action for when the player uses the item.
-    public Action<Item> hitAction; // Action for when the item hits the ground or another player.
 
     private void Awake()
     {
@@ -32,7 +31,7 @@ public class Item : MonoBehaviour
         // Currently only works when hitting the ground. Update in future to work whenever it hits something that isn't the player who threw or used it.
         if (used && collision.gameObject.layer << ground != 0)
         {
-            hitAction.Invoke(this);
+            item.hitAction.Invoke(this);
         }
     }
 
@@ -52,9 +51,7 @@ public class Item : MonoBehaviour
 
     public void CopyFromItemType(ItemType baseItem)
     {
-        useAction = baseItem.useAction;
-        hitAction = baseItem.hitAction;
-
+        item = baseItem;
         sprtRndr.sprite = baseItem.icon;
     }
 }

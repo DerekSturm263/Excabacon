@@ -15,6 +15,13 @@ public static class ItemTypes
         })
     );
 
+    public static ItemType Relic = new ItemType("Ancient Relic", null,
+        new System.Action<Item>((item) =>
+        {
+            item.Throw();
+        })
+    );
+
     public static ItemType ItemFromInt(int key)
     {
         if (key == -1)

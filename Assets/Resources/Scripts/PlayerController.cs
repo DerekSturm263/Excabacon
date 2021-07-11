@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
     public AbilityType abilityClass;
     public WeaponType weaponClass;
 
-    private AlterableStats alterableStats;
+    public AlterableStats alterableStats;
 
     [HideInInspector] public Item currentItem;
 
@@ -40,14 +40,14 @@ public class PlayerController : MonoBehaviour
     private UnityEngine.UI.Image manaBar;
     private TMPro.TMP_Text stockCount;
 
-    public GameObject arrow;
+    [SerializeField] private GameObject arrow;
 
     private int arrowCount;
     private float bowForce;
     private float bowPullTime;
     private float maxBowPullTime;
 
-    public GameObject spellBolt;
+    [SerializeField] private GameObject spellBolt;
 
     private bool isWeaponUpdate;
     private bool isAbilityUpdate;
@@ -56,8 +56,8 @@ public class PlayerController : MonoBehaviour
     private bool isDashDigging;
 
     [Header("Boxcast Settings")]
-    public Vector2 boxSize;
-    public Vector2 boxOffset;
+    [SerializeField] private Vector2 boxSize;
+    [SerializeField] private Vector2 boxOffset;
 
     private void Awake()
     {
@@ -250,7 +250,7 @@ public class PlayerController : MonoBehaviour
 
     private void UseItem()
     {
-        currentItem.useAction.Invoke(currentItem);
+        currentItem.item.useAction.Invoke(currentItem);
         currentItem = null;
     }
 
@@ -266,7 +266,7 @@ public class PlayerController : MonoBehaviour
         this.teamNum = teamNum;
 
         currentSpeed = playerClass.walkSpeed;
-        alterableStats = new AlterableStats(playerClass.hp, playerClass.mana, GameController.gameSettings.stocks);
+        alterableStats = new AlterableStats(playerClass.hp, playerClass.mana, GameController.gameSettings.stocks, 0);
 
         player.user.AssociateActionsWithUser(controls);
 
@@ -387,17 +387,18 @@ public class PlayerController : MonoBehaviour
 
     public void DealDamage(PlayerController target)
     {
-        target.TakeDamage(CalcDamage(this, target));
+        target.TakeDamage(CalcDamage(this, target), this);
         target.TakeKnockback(transform.position, this.weaponClass.knockback);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage, PlayerController attacker)
     {
         alterableStats.currentHP -= (damage > alterableStats.currentHP ? alterableStats.currentHP : damage);
         UpdateHealth();
 
         if (alterableStats.currentHP == 0f)
         {
+            ++attacker.alterableStats.kills;
             Die();
         }
     }
@@ -415,7 +416,7 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        if (alterableStats.stocks > 0)
+        if (alterableStats.stocks > 1)
         {
             --alterableStats.stocks;
             stockCount.text = "x" + alterableStats.stocks;

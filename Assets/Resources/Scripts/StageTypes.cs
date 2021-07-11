@@ -5,6 +5,7 @@ public static class StageTypes
 
     public static System.Collections.Generic.List<StageType> allStageTypes = new System.Collections.Generic.List<StageType>();
 
+    public static StageType Random = new StageType("Random", iconSpriteSheet[5], tiles[0]);
     public static StageType PlainsOfPlay = new StageType("The Plains of Play", iconSpriteSheet[0], tiles[0]);
     public static StageType MagicMines = new StageType("The Magic Mines", iconSpriteSheet[1], tiles[0]);
     public static StageType DesertOfDespair = new StageType("The Desert of Despair", iconSpriteSheet[2], tiles[0]);
@@ -13,7 +14,7 @@ public static class StageTypes
 
     public static StageType StageFromInt(int key)
     {
-        if (key == -1)
+        if (key == 0)
         {
             return allStageTypes[UnityEngine.Random.Range(0, allStageTypes.Count)];
         }

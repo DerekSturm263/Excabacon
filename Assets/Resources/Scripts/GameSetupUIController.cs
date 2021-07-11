@@ -14,9 +14,14 @@ public class GameSetupUIController : MonoBehaviour
     public GameObject players;
     public GameObject stages;
 
-    public UnityEngine.UI.Button[] playerButtons;
+    public TMPro.TMP_Text gamemodeName;
+    public TMPro.TMP_Text gamemodeDescription;
+    public TMPro.TMP_Text gamemodePlayers;
 
-    public TMPro.TMP_Text instructionLabel;
+    public UnityEngine.UI.Image stageIcon;
+    public TMPro.TMP_Text stageName;
+
+    public UnityEngine.UI.Button[] playerButtons;
 
     public TMPro.TMP_Text[] playerNames = new TMPro.TMP_Text[4];
     public UnityEngine.UI.Image[] playerIcons = new UnityEngine.UI.Image[4];
@@ -24,6 +29,9 @@ public class GameSetupUIController : MonoBehaviour
     public UnityEngine.UI.Image[] abilityIcons = new UnityEngine.UI.Image[4];
 
     public static GameSetupUIController current;
+
+    private System.Action<GameObject> onNewSelection = delegate { };
+    private GameObject oldSelected;
 
     private void Awake()
     {
@@ -50,6 +58,57 @@ public class GameSetupUIController : MonoBehaviour
         GameController.gameSettings.matchTime = 180f;
         GameController.gameSettings.itemSettings.itemSpawnRate = 2;
         GameController.gameSettings.itemSettings.items = ItemTypes.allItemTypes;
+
+        oldSelected = eventSystem.firstSelectedGameObject;
+        onNewSelection += SwitchGamemode;
+    }
+
+    private void Update()
+    {
+        if (eventSystem.currentSelectedGameObject != oldSelected)
+        {
+            oldSelected = eventSystem.currentSelectedGameObject;
+            onNewSelection.Invoke(eventSystem.currentSelectedGameObject);
+        }
+    }
+
+    private void SwitchGamemode(GameObject selection)
+    {
+        if (!gamemodes.activeSelf && !stages.activeSelf)
+            return;
+
+        if (gamemodes.activeSelf)
+        {
+            try
+            {
+                GamemodeType newGamemode = GamemodeTypes.allGamemodeTypes[selection.transform.GetSiblingIndex()];
+
+                gamemodeName.text = newGamemode.name;
+                gamemodeDescription.text = newGamemode.description;
+                gamemodePlayers.text = newGamemode.playerCount;
+            }
+            catch { }
+        }
+        else
+        {
+            try
+            {
+                StageType newStage = StageTypes.allStageTypes[selection.transform.GetSiblingIndex()];
+
+                stageIcon.sprite = newStage.icon;
+                stageName.text = newStage.name;
+            } catch { }
+        }
+    }
+
+    public void SelectGamemode(int gamemodeNum)
+    {
+        GameController.gameSettings.gameMode = GamemodeTypes.GamemodeFromInt(gamemodeNum);
+
+        gamemodes.SetActive(false);
+        players.SetActive(true);
+        
+        eventSystem.SetSelectedGameObject(players.GetComponentsInChildren<UnityEngine.UI.Button>()[0].gameObject);
     }
 
     public void OpenOrCloseSpot(Player player, Player.PlayerChange change)
@@ -65,17 +124,6 @@ public class GameSetupUIController : MonoBehaviour
                 playerButtons[player.playerNum].transform.GetChild(2).gameObject.SetActive(true);
                 break;
         }
-    }
-
-    public void SelectGamemode(int gamemodeNum)
-    {
-        GameController.gameSettings.gameMode = (GameSettings.GameMode) gamemodeNum;
-
-        gamemodes.SetActive(false);
-        players.SetActive(true);
-
-        instructionLabel.text = "Choose Your Characters";
-        eventSystem.SetSelectedGameObject(players.GetComponentsInChildren<UnityEngine.UI.Button>()[0].gameObject);
     }
 
     public void SwitchPlayer(InputDevice device, int direction)
@@ -117,27 +165,6 @@ public class GameSetupUIController : MonoBehaviour
         }
     }
 
-    public void LeaveOrDeselectPlayer(InputDevice device)
-    {
-        if (!players.activeSelf || !Player.players.ContainsKey(device))
-            return;
-
-        Player p = Player.GetPlayerFromDevice(device);
-
-        if (p.isReady)
-        {
-            p.isReady = false;
-            playerButtons[p.playerNum].interactable = true;
-
-            playerButtons[p.playerNum].transform.GetChild(0).gameObject.SetActive(true);
-            playerButtons[p.playerNum].transform.GetChild(1).gameObject.SetActive(false);
-        }
-        else
-        {
-            Player.RemovePlayer(device);
-        }
-    }
-
     public void SelectPlayer(Player player)
     {
         if (!players.activeSelf || !playerButtons[player.playerNum].interactable)
@@ -172,9 +199,28 @@ public class GameSetupUIController : MonoBehaviour
         players.SetActive(false);
         stages.SetActive(true);
 
-        instructionLabel.text = "Choose The Stage";
-
         Invoke("SelectStagesEventSystem", 0.05f);
+    }
+
+    public void LeaveOrDeselectPlayer(InputDevice device)
+    {
+        if (!players.activeSelf || !Player.players.ContainsKey(device))
+            return;
+
+        Player p = Player.GetPlayerFromDevice(device);
+
+        if (p.isReady)
+        {
+            p.isReady = false;
+            playerButtons[p.playerNum].interactable = true;
+
+            playerButtons[p.playerNum].transform.GetChild(0).gameObject.SetActive(true);
+            playerButtons[p.playerNum].transform.GetChild(1).gameObject.SetActive(false);
+        }
+        else
+        {
+            Player.RemovePlayer(device);
+        }
     }
 
     private void SelectStagesEventSystem()

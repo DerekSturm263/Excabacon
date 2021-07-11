@@ -1,10 +1,6 @@
 ﻿public struct GameSettings
 {
-    public enum GameMode : byte
-    {
-        Last_Pig_Standing, Relic_King, Treasure_Hunt, Raid_Battle
-    }
-    public GameMode gameMode;
+    public GamemodeType gameMode;
 
     public PigSettings[] players;
     public ItemSettings itemSettings;
