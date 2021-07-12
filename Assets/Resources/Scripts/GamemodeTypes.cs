@@ -34,7 +34,16 @@ public static class GamemodeTypes
 
     public static bool PlayerWinsRelic(GameController gameController)
     {
-        return false; // Change this later to go through players and see if their relic time is 30 or higher.
+        // Change this later to be better.
+        foreach (PlayerController player in gameController.players)
+        {
+            if (player.relicTime > GameController.gameSettings.itemSettings.relicTime)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static bool BossDies(GameController gameController)
@@ -46,8 +55,7 @@ public static class GamemodeTypes
 
     public static GamemodeType PvP = new GamemodeType("PvP", "Battle against other players in a fight to the death! The last pig standing will be declared the winner in this exciting gamemode!", "2 - 4 Players",
         winnerSorter: new System.Comparison<PlayerController>((p1, p2) => ComparePlayerKills(p1, p2)),
-        gameEndCondition: new System.Predicate<GameController>((gameController) => TimeRunsOut(gameController) || OnePlayerLeft(gameController)),
-        gameStart: new System.Action<GameController>((gameController) => gameController.SpawnBoss()));
+        gameEndCondition: new System.Predicate<GameController>((gameController) => TimeRunsOut(gameController) || OnePlayerLeft(gameController)));
     public static GamemodeType TreasureHunt = new GamemodeType("Treasure Hunt", "Compete in a race to collect the most treasure! Players dig to collect treasure, and whoever has the most at the end of the round wins!", "2 - 4 Players",
         winnerSorter: new System.Comparison<PlayerController>((p1, p2) => ComparePlayerKills(p1, p2)),
         gameEndCondition: new System.Predicate<GameController>((gameController) => TimeRunsOut(gameController) || OnePlayerLeft(gameController)));
@@ -56,7 +64,8 @@ public static class GamemodeTypes
         gameEndCondition: new System.Predicate<GameController>((gameController) => TimeRunsOut(gameController) || PlayerWinsRelic(gameController)));
     public static GamemodeType BossBattle = new GamemodeType("Boss Battle", "Battle bosses alongside your teammates in this gamemode. Choose from a variety of bosses and try to beat your high scores!", "1 - 4 Players",
         winnerSorter: new System.Comparison<PlayerController>((p1, p2) => 0),
-        gameEndCondition: new System.Predicate<GameController>((gameController) => TimeRunsOut(gameController) || BossDies(gameController)));
+        gameEndCondition: new System.Predicate<GameController>((gameController) => TimeRunsOut(gameController) || BossDies(gameController)),
+        gameStart: new System.Action<GameController>((gameController) => gameController.SpawnBoss()));
 
     public static GamemodeType GamemodeFromInt(int key)
     {

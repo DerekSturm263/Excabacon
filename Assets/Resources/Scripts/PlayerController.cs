@@ -53,6 +53,7 @@ public class PlayerController : MonoBehaviour, IComparable
     private bool isWeaponUpdate;
     private bool isAbilityUpdate;
 
+    private bool canDash;
     private Vector2 dashVec;
     private bool isDashDigging;
 
@@ -106,7 +107,7 @@ public class PlayerController : MonoBehaviour, IComparable
             }
         }
 
-        if (currentItem.item == ItemTypes.Relic)
+        if (currentItem && currentItem.item == ItemTypes.Relic)
         {
             relicTime += Time.deltaTime;
         }
@@ -335,7 +336,11 @@ public class PlayerController : MonoBehaviour, IComparable
     public void Mine()
     {
         GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, weaponClass.mineRadius, out bool hasMined);
-        rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
+
+        if (hasMined)
+        {
+            rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
+        }
     }
 
     #region Weapons
@@ -389,8 +394,12 @@ public class PlayerController : MonoBehaviour, IComparable
 
     public void Dash(float dashDist)
     {
+        if (!canDash)
+            return;
+
         rb2D.velocity = Vector2.zero;
         dashVec = controls.Player.Movement.ReadValue<Vector2>().normalized * dashDist;
+        canDash = false;
     }
 
     #endregion
@@ -473,7 +482,14 @@ public class PlayerController : MonoBehaviour, IComparable
 
     private bool IsGrounded()
     {
-        return Physics2D.BoxCast((Vector2) transform.position + boxOffset, boxSize, 0, Vector2.down, 0f, ground);
+        bool isGrounded = Physics2D.BoxCast((Vector2)transform.position + boxOffset, boxSize, 0, Vector2.down, 0f, ground);
+
+        if (isGrounded)
+        {
+            canDash = true;
+        }
+
+        return isGrounded;
     }
 
     private void OnDrawGizmos()

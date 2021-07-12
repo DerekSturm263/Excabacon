@@ -51,7 +51,7 @@ public class GameSetupUIController : MonoBehaviour
         controls.UI.DeselectLeave.performed += ctx => LeaveOrDeselectPlayer(ctx.control.device);
 
         // Default values.
-        GameController.gameSettings = new GameSettings(GamemodeTypes.PvP, new PigSettings[4], new ItemSettings(ItemTypes.allItemTypes, 2f), StageTypes.PlainsOfPlay, 5, 180f, 0);
+        GameController.gameSettings = new GameSettings(GamemodeTypes.PvP, new PigSettings[4], new ItemSettings(ItemTypes.allItemTypes, 2f, 30f), StageTypes.PlainsOfPlay, 5, 180f, 0);
 
         oldSelected = eventSystem.firstSelectedGameObject;
         onNewSelection += SwitchGamemode;
@@ -194,7 +194,7 @@ public class GameSetupUIController : MonoBehaviour
         players.SetActive(false);
         stages.SetActive(true);
 
-        Invoke("SelectStagesEventSystem", 0.05f);
+        Invoke(nameof(SelectStagesEventSystem), 0.05f);
     }
 
     public void LeaveOrDeselectPlayer(InputDevice device)

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class Item : MonoBehaviour
@@ -31,7 +30,10 @@ public class Item : MonoBehaviour
         // Currently only works when hitting the ground. Update in future to work whenever it hits something that isn't the player who threw or used it.
         if (used && collision.gameObject.layer << ground != 0)
         {
-            item.hitAction.Invoke(this);
+            if (item.hitAction != null)
+            {
+                item.hitAction.Invoke(this);
+            }
         }
     }
 

@@ -8,7 +8,7 @@ public class Projectile : MonoBehaviour
     private BoxCollider2D col2D;
 
     private float timeSinceTimer;
-    private float timerTime = 0.25f;
+    private readonly float timerTime = 0.25f;
 
     private void Awake()
     {
@@ -62,7 +62,7 @@ public class Projectile : MonoBehaviour
         }
         else if (col.CompareTag("Ground"))
         {
-            GameController.TerrainInterface.DestroyTerrain(transform.position, owner.weaponClass.mineRadius, out bool hitBlock);
+            GameController.TerrainInterface.DestroyTerrain(transform.position, owner.weaponClass.mineRadius, out bool hasMined);
         }
 
         Destroy(gameObject);

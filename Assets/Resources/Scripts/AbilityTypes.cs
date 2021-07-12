@@ -1,6 +1,6 @@
 public static class AbilityTypes
 {
-    private static UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/ability_icons");
+    private static readonly UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/ability_icons");
 
     public static System.Collections.Generic.List<AbilityType> allAbilityTypes = new System.Collections.Generic.List<AbilityType>();
     public static int Count

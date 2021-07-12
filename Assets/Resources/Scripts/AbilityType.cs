@@ -5,6 +5,7 @@ public class AbilityType
     public string name;
     public UnityEngine.Sprite icon;
 
+    public float damage;
     public float rechargeTime;
     public float manaUse;
 
@@ -17,6 +18,7 @@ public class AbilityType
         this.name = name;
         this.icon = icon;
 
+        this.damage = damage;
         this.rechargeTime = rechargeTime;
         this.manaUse = manaUse;
 

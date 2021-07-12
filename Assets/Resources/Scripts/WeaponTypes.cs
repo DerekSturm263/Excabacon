@@ -1,6 +1,6 @@
 public static class WeaponTypes
 {
-    private static UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/weapon_icons");
+    private static readonly UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/weapon_icons");
 
     public static System.Collections.Generic.List<WeaponType> allWeaponTypes = new System.Collections.Generic.List<WeaponType>();
     public static int Count

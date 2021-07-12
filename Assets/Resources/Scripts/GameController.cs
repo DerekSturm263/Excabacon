@@ -47,7 +47,10 @@ public class GameController : MonoBehaviour
             }
         }
 
-        gameSettings.gameMode.gameStart.Invoke(this);
+        if (gameSettings.gameMode.gameStart != null)
+        {
+            gameSettings.gameMode.gameStart.Invoke(this);
+        }
     }
 
     private void Update()

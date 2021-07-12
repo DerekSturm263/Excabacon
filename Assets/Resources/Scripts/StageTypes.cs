@@ -1,7 +1,7 @@
 public static class StageTypes
 {
-    private static UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/stage_icons");
-    private static UnityEngine.RuleTile[] tiles = UnityEngine.Resources.LoadAll<UnityEngine.RuleTile>("Tilemaps");
+    private static readonly UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/stage_icons");
+    private static readonly UnityEngine.RuleTile[] tiles = UnityEngine.Resources.LoadAll<UnityEngine.RuleTile>("Tilemaps");
 
     public static System.Collections.Generic.List<StageType> allStageTypes = new System.Collections.Generic.List<StageType>();
 

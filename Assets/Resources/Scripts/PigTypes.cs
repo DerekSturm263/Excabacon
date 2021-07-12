@@ -1,6 +1,6 @@
 public static class PigTypes
 {
-    private static UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/player_icons");
+    private static readonly UnityEngine.Sprite[] iconSpriteSheet = UnityEngine.Resources.LoadAll<UnityEngine.Sprite>("Spritesheets/player_icons");
 
     public static System.Collections.Generic.List<PigType> allPlayerTypes = new System.Collections.Generic.List<PigType>();
     public static int Count
