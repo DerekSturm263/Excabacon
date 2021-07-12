@@ -89,7 +89,7 @@ public class VoxelGrid : MonoBehaviour
     }
     
     
-    private void Refresh()
+    public void Refresh()
     {
         Triangulate();
     }
@@ -231,6 +231,7 @@ public class VoxelGrid : MonoBehaviour
 
     private void AddTriangle(Vector3 a, Vector3 b, Vector3 c)
     {
+        
         int vertexIndex = vertices.Count;
         vertices.Add(a);
         vertices.Add(b);
