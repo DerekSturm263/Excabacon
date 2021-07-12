@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.InputSystem;
 [SelectionBase]
 public class VoxelMap : MonoBehaviour
 {
@@ -17,7 +18,13 @@ public class VoxelMap : MonoBehaviour
 
     public TerrainModifierStack ModifierStack;
 
- 
+    public GameObject TestDestructor;
+
+    public int tempRadius = 3;
+
+    private VoxelStencil[] stencils ={ new VoxelStencil(),new VoxelStencilCircle()};
+    [Range(0,1)]
+    public int TempStencilINdex = 0;
 
     private void Awake()
     {
@@ -26,7 +33,74 @@ public class VoxelMap : MonoBehaviour
 
     }
 
+    private void Update() 
+    {
+        EditVoxels(new Vector2(TestDestructor.transform.position.x,TestDestructor.transform.position.y));
+    }
+    
+    public void EditVoxels(Vector2 point)
+    {
+        // can go out of range, in this event there will need to be some code to check if it is so it does not scream in the console window
+        
 
+
+        int CenterX = (int)((point.x + halfsize)/voxelsize);
+        int CenterY = (int)((point.y + halfsize)/voxelsize);
+        
+        int chunkX = CenterX /resolution;
+        int chunkY = CenterY /resolution;
+        //print(voxelX + "_x" + voxelY +"_Y");
+        //CenterX -= chunkX * resolution;
+        //CenterY -= chunkY * resolution;
+        
+        int Xstart = (CenterX - tempRadius -1)/resolution;
+        if(Xstart <0)
+            Xstart =0;
+        
+        int Xend = (CenterX + tempRadius)/resolution;
+        if(Xend >= chunkResolution)
+            Xend = chunkResolution -1;
+        
+        int Ystart = (CenterY - tempRadius - 1)/resolution;
+        if(Ystart <0)
+            Ystart =0;
+        
+        int Yend = (CenterY + tempRadius)/resolution;
+        if(Yend >= chunkResolution)
+            Yend = chunkResolution -1;
+        
+        
+        
+        VoxelStencil activeStencil = stencils[TempStencilINdex];
+        // probably do a thing if want to create terrain eventually too, radius should be passed in probably some sort of interface later on down the line
+        activeStencil.Initialize(false,tempRadius);
+        //activeStencil.setCenter(CenterX,CenterY);
+        
+        int voxelYoffset = Yend * resolution;
+        for(int y = Yend; y >= Ystart; y-- )
+        {
+            int i = y * chunkResolution + Xend;
+            int voxelXoffset = Xend * resolution;
+            for(int x = Xend; x >= Xstart; x--,i--)
+            {
+                activeStencil.setCenter(CenterX - voxelXoffset,CenterY - voxelYoffset);
+                chunks[i].Apply(activeStencil);
+                voxelXoffset -= resolution;
+            }
+            voxelYoffset -= resolution;
+        }
+        
+        
+        
+        
+        //chunks[chunkY * chunkResolution + chunkX].Apply(activeStencil);
+    }
+    
+    
+    
+    
+    
+    
     public void init()
     {
         halfsize = size * 0.5f;
@@ -69,7 +143,9 @@ public class VoxelMap : MonoBehaviour
                 }
         }
     }
+ 
 }
+
 
 
 

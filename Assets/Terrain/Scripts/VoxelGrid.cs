@@ -35,6 +35,8 @@ public class VoxelGrid : MonoBehaviour
    //private void Awake() {
        //initalize(resolution,1);
   // }
+
+  
     public void InitializeFromOther()
     {
         initalize(resolution,1);
@@ -88,8 +90,43 @@ public class VoxelGrid : MonoBehaviour
         voxels[i] = new voxel(x,y,voxelSize);
     }
     
+    public void Apply(VoxelStencil stencil)
+    {
+        int Xstart = stencil.Xstart;
+        if(Xstart <0)
+            Xstart =0;
+        int Xend = stencil.Xend;
+        if(Xend >= resolution)
+            Xend = resolution -1;
+        int Ystart = stencil.Ystart;
+        if(Ystart<0)
+            Ystart =0;
+        int Yend = stencil.Yend;
+        if(Yend >= resolution)
+            Yend = resolution -1;
+
+
+
+
+        for(int y = Ystart; y <= Yend; y++)
+        {
+            int i = y * resolution +Xstart;
+            for(int x = Xstart; x <= Xend; x++,i++)
+            {
+                voxels[i].state = stencil.Apply(x,y,voxels[i].state);
+            }
+        }
+      
+      
+      
+       // voxels[y *resolution + x ].state = stencil.Apply(stencil);
+       
+       
+       
+        Refresh();
+    }
     
-    private void Refresh()
+    public void Refresh()
     {
         Triangulate();
     }
@@ -231,6 +268,7 @@ public class VoxelGrid : MonoBehaviour
 
     private void AddTriangle(Vector3 a, Vector3 b, Vector3 c)
     {
+        
         int vertexIndex = vertices.Count;
         vertices.Add(a);
         vertices.Add(b);
