@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Animator))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IComparable
 {
     private Controls controls;
 
@@ -111,6 +112,12 @@ public class PlayerController : MonoBehaviour
         {
             AbilityUpdate();
         }
+    }
+
+    int IComparable.CompareTo(object obj)
+    {
+        PlayerController player = (PlayerController) obj;
+        return this.playerNum.CompareTo(player.playerNum);
     }
 
     #region Inputs
@@ -266,7 +273,7 @@ public class PlayerController : MonoBehaviour
         this.teamNum = teamNum;
 
         currentSpeed = playerClass.walkSpeed;
-        alterableStats = new AlterableStats(playerClass.hp, playerClass.mana, GameController.gameSettings.stocks, 0);
+        alterableStats = new AlterableStats(playerClass.hp, playerClass.mana, GameController.gameSettings.stocks, 0, 0, 0f);
 
         player.user.AssociateActionsWithUser(controls);
 
@@ -416,10 +423,12 @@ public class PlayerController : MonoBehaviour
 
     public void Die()
     {
-        if (alterableStats.stocks > 1)
+        --alterableStats.stocks;
+        stockCount.text = "x" + alterableStats.stocks;
+
+        if (alterableStats.stocks > 0)
         {
-            --alterableStats.stocks;
-            stockCount.text = "x" + alterableStats.stocks;
+            LosePoints(5);
 
             Spawn();
 
@@ -428,8 +437,14 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            GameController.current.playersLeft.Remove(this);
             gameObject.SetActive(false);
         }
+    }
+
+    private void LosePoints(int count)
+    {
+        this.alterableStats.points -= count > this.alterableStats.points ? this.alterableStats.points : count;
     }
 
     private void UpdateHealth()

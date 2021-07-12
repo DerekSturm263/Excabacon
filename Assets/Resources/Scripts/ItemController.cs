@@ -8,12 +8,12 @@ public class ItemController : MonoBehaviour
 
     private void Awake()
     {
-        if (GameController.gameSettings.itemSettings.itemSpawnRate == 0f)
+        if (GameController.gameSettings.itemSettings.spawnRate == 0f)
         {
             gameObject.SetActive(false);
         }
 
-        nextTimeTillItemSpawn = (-20f * GameController.gameSettings.itemSettings.itemSpawnRate * Random.Range(0.8f, 1.2f)) + 70f;
+        nextTimeTillItemSpawn = (-20f * GameController.gameSettings.itemSettings.spawnRate * Random.Range(0.8f, 1.2f)) + 70f;
     }
 
     private void Update()
@@ -35,6 +35,6 @@ public class ItemController : MonoBehaviour
         newItem.transform.position = Vector2.zero;
 
         lastTimeSinceItemSpawn = 0f;
-        nextTimeTillItemSpawn = (-20f * GameController.gameSettings.itemSettings.itemSpawnRate * Random.Range(0.8f, 1.2f)) + 70f;
+        nextTimeTillItemSpawn = (-20f * GameController.gameSettings.itemSettings.spawnRate * Random.Range(0.8f, 1.2f)) + 70f;
     }
 }

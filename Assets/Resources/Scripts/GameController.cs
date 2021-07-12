@@ -17,11 +17,20 @@ public class GameController : MonoBehaviour
     [HideInInspector] public float timeRemaining;
     public TMPro.TMP_Text time;
 
+    public static PlayerController[] winners;
+    public System.Collections.Generic.List<PlayerController> playersLeft = new System.Collections.Generic.List<PlayerController>();
+
+    public static GameController current;
+
     private void Awake()
     {
+        current = this;
+
         spawnPoints = GameObject.FindGameObjectsWithTag("Spawn Point");
         TerrainInterface = Terrain.GetComponent<ModifyTerrain>();
         timeRemaining = gameSettings.matchTime;
+
+        winners = new PlayerController[gameSettings.playerCount];
 
         for (int i = 0; i < 4; ++i)
         {
@@ -34,6 +43,9 @@ public class GameController : MonoBehaviour
                 newPlayer.Setup(Player.GetPlayerFromIndex(i), pigSettings.player, pigSettings.weapon, pigSettings.ability, i, pigSettings.teamNum);
 
                 players.Add(newPlayer);
+                playersLeft.Add(newPlayer);
+                winners[i] = newPlayer;
+
                 CameraController.targets.Add(newPlayer.transform);
             }
             else
@@ -48,7 +60,7 @@ public class GameController : MonoBehaviour
         timeRemaining -= Time.deltaTime;
         time.text = (int) timeRemaining / 60 + ":" + ((int) timeRemaining % 60).ToString().PadLeft(2, '0');
 
-        if (timeRemaining <= 0)
+        if (gameSettings.gameMode.gameEndCondition.Invoke(this))
         {
             GameEnd();
         }
@@ -56,27 +68,7 @@ public class GameController : MonoBehaviour
 
     private void GameEnd()
     {
-        PlayerController winner = null;
-
-        foreach (PlayerController p in players)
-        {
-            if (CheckForWin(p, gameSettings.gameMode.winCondition, ref winner))
-            {
-                break;
-            }
-        }
-
+        System.Array.Sort(winners, gameSettings.gameMode.winnerSorter);
         UnityEngine.SceneManagement.SceneManager.LoadScene("Results");
-    }
-
-    public bool CheckForWin(PlayerController player, System.Predicate<PlayerController> winCondition, ref PlayerController winner)
-    {
-        if (winCondition.Invoke(player))
-        {
-            winner = player;
-            return true;
-        }
-
-        return false;
     }
 }

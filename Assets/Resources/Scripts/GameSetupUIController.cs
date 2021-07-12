@@ -51,13 +51,7 @@ public class GameSetupUIController : MonoBehaviour
         controls.UI.DeselectLeave.performed += ctx => LeaveOrDeselectPlayer(ctx.control.device);
 
         // Default values.
-        GameController.gameSettings = new GameSettings();
-
-        GameController.gameSettings.players = new PigSettings[4];
-        GameController.gameSettings.stocks = 5;
-        GameController.gameSettings.matchTime = 180f;
-        GameController.gameSettings.itemSettings.itemSpawnRate = 2;
-        GameController.gameSettings.itemSettings.items = ItemTypes.allItemTypes;
+        GameController.gameSettings = new GameSettings(GamemodeTypes.PvP, new PigSettings[4], new ItemSettings(ItemTypes.allItemTypes, 2f), StageTypes.PlainsOfPlay, 5, 180f, 0);
 
         oldSelected = eventSystem.firstSelectedGameObject;
         onNewSelection += SwitchGamemode;
@@ -186,6 +180,7 @@ public class GameSetupUIController : MonoBehaviour
         }
 
         player.isReady = true;
+        ++GameController.gameSettings.playerCount;
 
         playerButtons[player.playerNum].transform.GetChild(0).gameObject.SetActive(false);
         playerButtons[player.playerNum].transform.GetChild(1).gameObject.SetActive(true);
@@ -216,6 +211,8 @@ public class GameSetupUIController : MonoBehaviour
 
             playerButtons[p.playerNum].transform.GetChild(0).gameObject.SetActive(true);
             playerButtons[p.playerNum].transform.GetChild(1).gameObject.SetActive(false);
+
+            --GameController.gameSettings.playerCount;
         }
         else
         {
@@ -244,7 +241,7 @@ public class GameSetupUIController : MonoBehaviour
     {
         // Add items based on whether the bit is on or off.
 
-        GameController.gameSettings.itemSettings.itemSpawnRate = spawnRate;
+        GameController.gameSettings.itemSettings.spawnRate = spawnRate;
     }
 
     public void SelectStock(int newStock)

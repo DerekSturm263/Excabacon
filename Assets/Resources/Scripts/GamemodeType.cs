@@ -4,15 +4,17 @@ public class GamemodeType
     public string description;
     public string playerCount;
 
-    public System.Predicate<PlayerController> winCondition; // CHANGE TO SOME SORT OF SORTING THINGY.
+    public System.Comparison<PlayerController> winnerSorter;
+    public System.Predicate<GameController> gameEndCondition;
 
-    public GamemodeType(string name, string description, string playerCount, System.Predicate<PlayerController> winCondition)
+    public GamemodeType(string name, string description, string playerCount, System.Comparison<PlayerController> winnerSorter, System.Predicate<GameController> gameEndCondition)
     {
         this.name = name;
         this.description = description;
         this.playerCount = playerCount;
 
-        this.winCondition = winCondition;
+        this.winnerSorter = winnerSorter;
+        this.gameEndCondition = gameEndCondition;
 
         GamemodeTypes.allGamemodeTypes.Add(this);
     }

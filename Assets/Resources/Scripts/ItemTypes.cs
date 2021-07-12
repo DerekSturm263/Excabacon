@@ -15,7 +15,7 @@ public static class ItemTypes
         })
     );
 
-    public static ItemType Relic = new ItemType("Ancient Relic", null,
+    public static ItemType Relic = new ItemType("Ancient Relic", iconSpriteSheet[0],
         new System.Action<Item>((item) =>
         {
             item.Throw();
