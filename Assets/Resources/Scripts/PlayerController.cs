@@ -60,6 +60,8 @@ public class PlayerController : MonoBehaviour, IComparable
     [SerializeField] private Vector2 boxSize;
     [SerializeField] private Vector2 boxOffset;
 
+    [HideInInspector] public float relicTime;
+
     private void Awake()
     {
         controls = new Controls();
@@ -104,6 +106,14 @@ public class PlayerController : MonoBehaviour, IComparable
             }
         }
 
+        if (currentItem.item == ItemTypes.Relic)
+        {
+            relicTime += Time.deltaTime;
+        }
+    }
+
+    private void FixedUpdate()
+    {
         if (isWeaponUpdate)
         {
             WeaponUpdate();
