@@ -35,7 +35,7 @@ public class VoxelMap : MonoBehaviour
 
     private void Update() 
     {
-        EditVoxels(new Vector2(TestDestructor.transform.position.x,TestDestructor.transform.position.y));
+        //EditVoxels(new Vector2(TestDestructor.transform.position.x,TestDestructor.transform.position.y));
     }
     
     public void EditVoxels(Vector2 point)

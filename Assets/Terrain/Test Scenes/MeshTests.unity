@@ -568,6 +568,10 @@ MonoBehaviour:
   xNeighbor: {fileID: 0}
   yNeighbor: {fileID: 0}
   xyNeighbor: {fileID: 0}
+  spawnPrefabTest: {fileID: 0}
+  allIndices: 
+  newIndices: 
+  restIndices: 
 --- !u!23 &1753901155
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -744,7 +748,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1862274597}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 5.04, y: -11.99, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -903,6 +907,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8137829216382134575, guid: 05be6ef3d2e4275439c5f6a5700f688a,
         type: 3}
+      propertyPath: resolution
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8137829216382134575, guid: 05be6ef3d2e4275439c5f6a5700f688a,
+        type: 3}
+      propertyPath: tempRadius
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8137829216382134575, guid: 05be6ef3d2e4275439c5f6a5700f688a,
+        type: 3}
       propertyPath: GridPartition
       value: 
       objectReference: {fileID: 217853693}
@@ -916,5 +930,10 @@ PrefabInstance:
       propertyPath: TestDestructor
       value: 
       objectReference: {fileID: 1862274597}
+    - target: {fileID: 8137829216382134575, guid: 05be6ef3d2e4275439c5f6a5700f688a,
+        type: 3}
+      propertyPath: chunkResolution
+      value: 38
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05be6ef3d2e4275439c5f6a5700f688a, type: 3}
