@@ -44,6 +44,9 @@ public class GameSetupUIController : MonoBehaviour
         players.SetActive(false);
         stages.SetActive(false);
 
+        controls.UI.Back.performed += ctx => Back(ctx.control.device);
+        controls.UI.Options.performed += ctx => OpenOptions();
+
         controls.UI.CycleLeft.started += ctx => SwitchPlayer(ctx.control.device, -1);
         controls.UI.CycleRight.started += ctx => SwitchPlayer(ctx.control.device, 1);
 
@@ -66,6 +69,31 @@ public class GameSetupUIController : MonoBehaviour
         }
     }
 
+    private void Back(InputDevice device)
+    {
+        if (gamemodes.activeSelf)
+        {
+            UnityEngine.SceneManagement.SceneManager.LoadScene("Title");
+        }
+        else if (players.activeSelf)
+        {
+            players.SetActive(false);
+            gamemodes.SetActive(true);
+
+            eventSystem.SetSelectedGameObject(gamemodes.GetComponentsInChildren<UnityEngine.UI.Button>()[0].gameObject);
+        }
+        else
+        {
+            players.SetActive(true);
+            stages.SetActive(false);
+        }
+    }
+
+    private void OpenOptions()
+    {
+
+    }
+
     private void SwitchGamemode(GameObject selection)
     {
         if (!gamemodes.activeSelf && !stages.activeSelf)
@@ -79,7 +107,7 @@ public class GameSetupUIController : MonoBehaviour
 
                 gamemodeName.text = newGamemode.name;
                 gamemodeDescription.text = newGamemode.description;
-                gamemodePlayers.text = newGamemode.playerCount;
+                gamemodePlayers.text = newGamemode.minPlayerCount + " - " + newGamemode.maxPlayerCount + " Players";
             }
             catch { }
         }
@@ -102,7 +130,7 @@ public class GameSetupUIController : MonoBehaviour
         gamemodes.SetActive(false);
         players.SetActive(true);
         
-        eventSystem.SetSelectedGameObject(players.GetComponentsInChildren<UnityEngine.UI.Button>()[0].gameObject);
+        //eventSystem.SetSelectedGameObject(players.GetComponentsInChildren<UnityEngine.UI.Button>()[0].gameObject);
     }
 
     public void OpenOrCloseSpot(Player player, Player.PlayerChange change)
@@ -184,6 +212,9 @@ public class GameSetupUIController : MonoBehaviour
 
         playerButtons[player.playerNum].transform.GetChild(0).gameObject.SetActive(false);
         playerButtons[player.playerNum].transform.GetChild(1).gameObject.SetActive(true);
+
+        if (GameController.gameSettings.playerCount < GameController.gameSettings.gameMode.minPlayerCount)
+            return;
 
         foreach (System.Collections.Generic.KeyValuePair<InputDevice, Player> playerVal in Player.players)
         {

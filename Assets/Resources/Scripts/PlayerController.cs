@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour, IComparable
     public WeaponType weaponClass;
 
     public AlterableStats alterableStats;
+    public float statMultiplier = 1f;
 
     [HideInInspector] public Item currentItem;
 
@@ -125,17 +126,84 @@ public class PlayerController : MonoBehaviour, IComparable
         }
     }
 
-    int IComparable.CompareTo(object obj)
+    public void Mine()
     {
-        PlayerController player = (PlayerController) obj;
-        return this.playerNum.CompareTo(player.playerNum);
+        GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, weaponClass.mineRadius, out bool hasMined);
+
+        if (hasMined)
+        {
+            rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
+        }
     }
+
+    #region Setup
+
+    public void Setup(Player player, PigType pigType, WeaponType weaponType, AbilityType abilityType, int playerNum, int teamNum)
+    {
+        playerClass = pigType;
+        weaponClass = weaponType;
+        abilityClass = abilityType;
+
+        this.playerNum = playerNum;
+        this.teamNum = teamNum;
+
+        currentSpeed = playerClass.walkSpeed;
+        alterableStats = new AlterableStats(playerClass.hp, playerClass.mana, GameController.gameSettings.stocks, 0, 0, 0f);
+
+        player.user.AssociateActionsWithUser(controls);
+
+        InputControlScheme? scheme = InputControlScheme.FindControlSchemeForDevice(player.pairedDevice, controls.controlSchemes);
+        if (scheme.HasValue)
+        {
+            player.user.ActivateControlScheme(scheme.Value);
+        }
+
+        Spawn();
+        SetupHUD();
+    }
+
+    private void Spawn()
+    {
+        transform.position = GameController.spawnPoints[playerNum].transform.position;
+
+        alterableStats.currentHP = playerClass.hp;
+        alterableStats.currentMana = playerClass.mana;
+    }
+
+    private void SetupHUD()
+    {
+        GameObject hud = GameObject.FindGameObjectsWithTag("HUD")[playerNum];
+        UnityEngine.UI.Image[] hudImages = hud.GetComponentsInChildren<UnityEngine.UI.Image>();
+
+        healthBar = hudImages[0];
+        manaBar = hudImages[1];
+
+        playerIcon = hudImages[2];
+        playerIcon.sprite = playerClass.icon;
+
+        weaponIcon = hudImages[3];
+        weaponIcon.sprite = weaponClass.icon;
+
+        abilityIcon = hudImages[4];
+        abilityIcon.sprite = abilityClass.icon;
+
+        stockCount = hud.GetComponentsInChildren<TMPro.TMP_Text>()[1];
+
+        if (playerClass.mana == 0)
+        {
+            manaBar.enabled = false;
+        }
+
+        stockCount.text = "x" + alterableStats.stocks;
+    }
+
+    #endregion
 
     #region Inputs
 
     private void Move(Vector2 input)
     {
-        rb2D.velocity = new Vector2(input.x * currentSpeed, rb2D.velocity.y);
+        rb2D.velocity = new Vector2(input.x * currentSpeed * statMultiplier, rb2D.velocity.y);
 
         if (rb2D.velocity.x < 0f)
         {
@@ -144,6 +212,11 @@ public class PlayerController : MonoBehaviour, IComparable
         else if (rb2D.velocity.x > 0f)
         {
             sprtRndr.flipX = false;
+        }
+
+        if (controls.Player.Aiming.ReadValue<Vector2>() == Vector2.zero)
+        {
+            Aim(input);
         }
     }
 
@@ -262,87 +335,26 @@ public class PlayerController : MonoBehaviour, IComparable
             Item item = results.transform.gameObject.GetComponent<Item>();
 
             currentItem = item;
-            item.carrier = transform.gameObject;
+            item.carrier = this;
+
+            if (item.item.pickupAction != null)
+            {
+                item.item.pickupAction.Invoke(item);
+            }
         }
     }
 
     private void UseItem()
     {
-        currentItem.item.useAction.Invoke(currentItem);
+        if (currentItem.item.useAction != null)
+        {
+            currentItem.item.useAction.Invoke(currentItem);
+        }
         currentItem = null;
     }
 
     #endregion
-
-    public void Setup(Player player, PigType pigType, WeaponType weaponType, AbilityType abilityType, int playerNum, int teamNum)
-    {
-        playerClass = pigType;
-        weaponClass = weaponType;
-        abilityClass = abilityType;
-
-        this.playerNum = playerNum;
-        this.teamNum = teamNum;
-
-        currentSpeed = playerClass.walkSpeed;
-        alterableStats = new AlterableStats(playerClass.hp, playerClass.mana, GameController.gameSettings.stocks, 0, 0, 0f);
-
-        player.user.AssociateActionsWithUser(controls);
-
-        InputControlScheme? scheme = InputControlScheme.FindControlSchemeForDevice(player.pairedDevice, controls.controlSchemes);
-        if (scheme.HasValue)
-        {
-            player.user.ActivateControlScheme(scheme.Value);
-        }
-
-        Spawn();
-        SetupHUD();
-    }
-
-    private void Spawn()
-    {
-        transform.position = GameController.spawnPoints[playerNum].transform.position;
-
-        alterableStats.currentHP = playerClass.hp;
-        alterableStats.currentMana = playerClass.mana;
-    }
-
-    private void SetupHUD()
-    {
-        GameObject hud = GameObject.FindGameObjectsWithTag("HUD")[playerNum];
-        UnityEngine.UI.Image[] hudImages = hud.GetComponentsInChildren<UnityEngine.UI.Image>();
-
-        healthBar = hudImages[0];
-        manaBar = hudImages[1];
-
-        playerIcon = hudImages[2];
-        playerIcon.sprite = playerClass.icon;
-
-        weaponIcon = hudImages[3];
-        weaponIcon.sprite = weaponClass.icon;
-
-        abilityIcon = hudImages[4];
-        abilityIcon.sprite = abilityClass.icon;
-
-        stockCount = hud.GetComponentsInChildren<TMPro.TMP_Text>()[1];
-
-        if (playerClass.mana == 0)
-        {
-            manaBar.enabled = false;
-        }
-
-        stockCount.text = "x" + alterableStats.stocks;
-    }
-
-    public void Mine()
-    {
-        GameController.TerrainInterface.DestroyTerrain(transform.position + weaponPivot.transform.right, weaponClass.mineRadius, out bool hasMined);
-
-        if (hasMined)
-        {
-            rb2D.velocity = weaponPivot.transform.right * playerClass.undergroundSpeed;
-        }
-    }
-
+    
     #region Weapons
 
     public void Spell()
@@ -408,7 +420,7 @@ public class PlayerController : MonoBehaviour, IComparable
 
     public static float CalcDamage(PlayerController attacker, PlayerController defender)
     {
-        return attacker.weaponClass.damage * attacker.playerClass.damage / defender.playerClass.defense;
+        return (attacker.weaponClass.damage * attacker.playerClass.damage * attacker.statMultiplier) / (defender.playerClass.defense * defender.statMultiplier);
     }
 
     public void DealDamage(PlayerController target)
@@ -431,12 +443,24 @@ public class PlayerController : MonoBehaviour, IComparable
 
     public void TakeKnockback(Vector2 hitLoc, float force)
     {
-        rb2D.AddForce((hitLoc - (Vector2) transform.position) * force);
+        rb2D.AddForce(((hitLoc - (Vector2) transform.position).normalized) * force);
     }
 
     public void UseMana(float manaUse)
     {
         alterableStats.currentMana -= manaUse;
+        UpdateMana();
+    }
+
+    public void Heal(float amount)
+    {
+        alterableStats.currentHP += amount < playerClass.hp - alterableStats.currentHP ? amount : playerClass.hp - alterableStats.currentHP;
+        UpdateHealth();
+    }
+
+    public void RestoreMana(float amount)
+    {
+        alterableStats.currentMana += amount < playerClass.mana - alterableStats.currentMana ? amount : playerClass.mana - alterableStats.currentMana;
         UpdateMana();
     }
 
@@ -548,11 +572,18 @@ public class PlayerController : MonoBehaviour, IComparable
         if (collision.gameObject.layer << ground != 0)
         {
             isDashDigging = false;
+            canDash = true;
 
             col2D.isTrigger = false;
             rb2D.gravityScale = 5f;
             rb2D.velocity = Vector2.zero;
         }
+    }
+
+    int IComparable.CompareTo(object obj)
+    {
+        PlayerController player = (PlayerController)obj;
+        return this.playerNum.CompareTo(player.playerNum);
     }
 
     private void OnEnable()

@@ -399,6 +399,22 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Back"",
+                    ""type"": ""Button"",
+                    ""id"": ""01009388-68e5-4889-9e0e-d4f53eeb82ea"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                },
+                {
+                    ""name"": ""Options"",
+                    ""type"": ""Button"",
+                    ""id"": ""20850ac1-19b6-4857-bab0-682b1129728c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -533,6 +549,50 @@ public class @Controls : IInputActionCollection, IDisposable
                     ""action"": ""Deselect/Leave"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""54813f84-d138-4086-be61-9cc2e09c8ee5"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""88500ef8-e4cf-4c13-be1b-852eb921e90a"",
+                    ""path"": ""<Keyboard>/backspace"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse + Keyboard"",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""53a75706-94ce-4848-b0dd-bc2b21c44461"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Options"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7250f5c9-a2ae-42a3-9167-b8ddf3178790"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Mouse + Keyboard"",
+                    ""action"": ""Options"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -582,6 +642,8 @@ public class @Controls : IInputActionCollection, IDisposable
         m_UI_CycleRight = m_UI.FindAction("Cycle Right", throwIfNotFound: true);
         m_UI_SelectJoin = m_UI.FindAction("Select/Join", throwIfNotFound: true);
         m_UI_DeselectLeave = m_UI.FindAction("Deselect/Leave", throwIfNotFound: true);
+        m_UI_Back = m_UI.FindAction("Back", throwIfNotFound: true);
+        m_UI_Options = m_UI.FindAction("Options", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -716,6 +778,8 @@ public class @Controls : IInputActionCollection, IDisposable
     private readonly InputAction m_UI_CycleRight;
     private readonly InputAction m_UI_SelectJoin;
     private readonly InputAction m_UI_DeselectLeave;
+    private readonly InputAction m_UI_Back;
+    private readonly InputAction m_UI_Options;
     public struct UIActions
     {
         private @Controls m_Wrapper;
@@ -724,6 +788,8 @@ public class @Controls : IInputActionCollection, IDisposable
         public InputAction @CycleRight => m_Wrapper.m_UI_CycleRight;
         public InputAction @SelectJoin => m_Wrapper.m_UI_SelectJoin;
         public InputAction @DeselectLeave => m_Wrapper.m_UI_DeselectLeave;
+        public InputAction @Back => m_Wrapper.m_UI_Back;
+        public InputAction @Options => m_Wrapper.m_UI_Options;
         public InputActionMap Get() { return m_Wrapper.m_UI; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -745,6 +811,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @DeselectLeave.started -= m_Wrapper.m_UIActionsCallbackInterface.OnDeselectLeave;
                 @DeselectLeave.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnDeselectLeave;
                 @DeselectLeave.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnDeselectLeave;
+                @Back.started -= m_Wrapper.m_UIActionsCallbackInterface.OnBack;
+                @Back.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnBack;
+                @Back.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnBack;
+                @Options.started -= m_Wrapper.m_UIActionsCallbackInterface.OnOptions;
+                @Options.performed -= m_Wrapper.m_UIActionsCallbackInterface.OnOptions;
+                @Options.canceled -= m_Wrapper.m_UIActionsCallbackInterface.OnOptions;
             }
             m_Wrapper.m_UIActionsCallbackInterface = instance;
             if (instance != null)
@@ -761,6 +833,12 @@ public class @Controls : IInputActionCollection, IDisposable
                 @DeselectLeave.started += instance.OnDeselectLeave;
                 @DeselectLeave.performed += instance.OnDeselectLeave;
                 @DeselectLeave.canceled += instance.OnDeselectLeave;
+                @Back.started += instance.OnBack;
+                @Back.performed += instance.OnBack;
+                @Back.canceled += instance.OnBack;
+                @Options.started += instance.OnOptions;
+                @Options.performed += instance.OnOptions;
+                @Options.canceled += instance.OnOptions;
             }
         }
     }
@@ -799,5 +877,7 @@ public class @Controls : IInputActionCollection, IDisposable
         void OnCycleRight(InputAction.CallbackContext context);
         void OnSelectJoin(InputAction.CallbackContext context);
         void OnDeselectLeave(InputAction.CallbackContext context);
+        void OnBack(InputAction.CallbackContext context);
+        void OnOptions(InputAction.CallbackContext context);
     }
 }

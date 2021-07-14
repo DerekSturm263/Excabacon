@@ -6,7 +6,7 @@ public class Item : MonoBehaviour
 
     private LayerMask ground = 1 << 6;
     private bool used;
-    public GameObject carrier;
+    public PlayerController carrier;
 
     [HideInInspector] public Rigidbody2D rb2D;
     [HideInInspector] public SpriteRenderer sprtRndr;
@@ -39,10 +39,17 @@ public class Item : MonoBehaviour
 
     public void Throw()
     {
+        rb2D.velocity = Vector2.zero;
         rb2D.AddForce(new Vector2((carrier.GetComponent<SpriteRenderer>().flipX ? -10f : 10f), 10f), ForceMode2D.Impulse);
 
         carrier = null;
         used = true;
+    }
+
+    public void Destroy()
+    {
+        carrier = null;
+        Destroy(gameObject);
     }
 
     public void Explode()

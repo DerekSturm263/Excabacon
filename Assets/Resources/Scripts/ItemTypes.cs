@@ -5,19 +5,39 @@ public static class ItemTypes
     public static System.Collections.Generic.List<ItemType> allItemTypes = new System.Collections.Generic.List<ItemType>();
 
     public static ItemType Bomb = new ItemType("Bomb", iconSpriteSheet[0],
-        new System.Action<Item>((item) =>
+        null,
+        useAction: new System.Action<Item>((item) =>
         {
             item.Throw();
         }),
-        new System.Action<Item>((item) =>
+        hitAction: new System.Action<Item>((item) =>
         {
             item.Explode();
         })
     );
 
-    public static ItemType Relic = new ItemType("Ancient Relic", iconSpriteSheet[0],
-        new System.Action<Item>((item) =>
+    public static ItemType HealthPotion = new ItemType("Health Potion", iconSpriteSheet[1],
+        pickupAction: new System.Action<Item>((item) =>
         {
+            item.carrier.Heal(25f);
+            item.Destroy();
+        }));
+
+    public static ItemType ManaPotion = new ItemType("Mana Potion", iconSpriteSheet[2],
+        pickupAction: new System.Action<Item>((item) =>
+        {
+            item.carrier.RestoreMana(25f);
+            item.Destroy();
+        }));
+
+    public static ItemType Relic = new ItemType("Ancient Relic", iconSpriteSheet[3],
+        pickupAction: new System.Action<Item>((item) =>
+        {
+            item.carrier.statMultiplier = 1.5f;
+        }),
+        useAction: new System.Action<Item>((item) =>
+        {
+            item.carrier.statMultiplier = 1f;
             item.Throw();
         })
     );
