@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 7413044852067818717}
   - component: {fileID: 1123799845525493795}
   - component: {fileID: 8008630677666722205}
+  - component: {fileID: 8394841353888203236}
+  - component: {fileID: 8473808070656727605}
   m_Layer: 0
   m_Name: Terrain_Chunk
   m_TagString: Untagged
@@ -53,6 +55,8 @@ MonoBehaviour:
   xNeighbor: {fileID: 0}
   yNeighbor: {fileID: 0}
   xyNeighbor: {fileID: 0}
+  spawnPrefabTest: {fileID: 707988418474553794, guid: 2496ac85457a7a243b56f96b616d9a5d,
+    type: 3}
 --- !u!33 &1123799845525493795
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -102,3 +106,46 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!50 &8394841353888203236
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7413044852067818716}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!66 &8473808070656727605
+CompositeCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7413044852067818716}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_GeometryType: 0
+  m_GenerationType: 0
+  m_EdgeRadius: 0
+  m_ColliderPaths: []
+  m_CompositePaths:
+    m_Paths: []
+  m_VertexDistance: 0.0005
+  m_OffsetDistance: 0.00005
