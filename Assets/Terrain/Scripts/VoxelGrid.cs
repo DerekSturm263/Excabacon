@@ -145,7 +145,7 @@ public class VoxelGrid : MonoBehaviour
     {
         yield return new WaitForSeconds(0.01f);
         Refresh();
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(2f);
         GenerateCollisions();
         //RandomSplitMeshTest();
     }
@@ -191,7 +191,7 @@ public class VoxelGrid : MonoBehaviour
     }
     void CalculateMeshOutlines()
     {
-        for(int vi =0; vi < vertices.Count;vi ++){
+        for(int vi =0; vi < vertices.Count; vi++){
             if(!checkedVertices.Contains(vi)){
                 int newOutlineVertex = GetConnectedOutlineVertex(vi);
                 if (newOutlineVertex != -1){
@@ -476,7 +476,7 @@ public class VoxelGrid : MonoBehaviour
         triangles.Add(b);
         triangles.Add(c);
 
-        triangle tri = new triangle (a,b,c);
+        triangle tri = new triangle (triangles[a],triangles[b],triangles[c]);
         AddTriangleDictionary(tri.VertexIndexA,tri);
         AddTriangleDictionary(tri.VertexIndexB,tri);
         AddTriangleDictionary(tri.VertexIndexC,tri);
